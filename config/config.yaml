@@ -31,8 +31,8 @@ products:
 
 # --- Realised CCF -------------------------------------------------------------
 realised_ccf:
-  horizon_months: 12            # [DECISION] fixed-horizon approach: reference date = default date - 12m
-  roi_threshold: 0.95           # [DECISION] utilisation >= this -> "region of instability"
+  horizon_months: 12            # D001 APPROVED: fixed-horizon approach: reference date = default date - 12m
+  roi_threshold: 0.95           # D003 APPROVED: utilisation >= this -> "region of instability"
   # D002 APPROVED (hybrid): negative CCFs (repayments) kept for STANDARD facilities,
   # floored at 0 for ROI / FULLY_DRAWN (stabilised denominator makes repayments dominate)
   floor_standard: null

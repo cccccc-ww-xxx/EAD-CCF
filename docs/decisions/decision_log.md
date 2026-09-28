@@ -44,7 +44,7 @@ Regulatory shorthand: *CRR* = Reg. (EU) 575/2013 as amended by CRR3 (Reg. (EU)
 **References:** CRR Art. 4(1)(56); draft GL section 5.5.
 
 ## D003 — Region of instability and fully drawn facilities
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 Near-fully-drawn facilities have a tiny undrawn amount, so the raw CCF explodes (example: limit 1,000, drawn 995, extra drawing 30 → CCF 600%). Fully drawn revolving facilities are in scope of IRB-CCF under the draft GL, but the raw CCF is undefined.
 
@@ -55,7 +55,8 @@ Near-fully-drawn facilities have a tiny undrawn amount, so the raw CCF explodes 
 | Exclude and apply fixed conservative CCF | Simple | Loses information; possibly excessive conservatism |
 
 **Proposal:** stabilised denominator (`realised_ccf.roi_threshold = 0.95`); separate calibration segment for these facilities; sensitivity to the threshold to be shown at checkpoint B.
-**References:** CRR Art. 4(1)(56); draft GL sections 4.1, 5.5. **Decision:** _pending_
+**References:** CRR Art. 4(1)(56); draft GL sections 4.1, 5.5.
+**Decision:** Stabilised denominator max(undrawn, 5% × limit) for utilisation ≥ 95%, including fully drawn facilities; these form their own calibration segment. Threshold sensitivity (e.g. 90% and 98%) to be shown to validation at checkpoint B.
 
 ## D004 — Segmentation (benchmark and calibration segments)
 **Status: PROPOSED**

@@ -14,7 +14,7 @@ Regulatory shorthand: *CRR* = Reg. (EU) 575/2013 as amended by CRR3 (Reg. (EU)
 ---
 
 ## D001 — Reference date approach and observation period
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 | Option | Pros | Cons |
 |---|---|---|
@@ -23,7 +23,8 @@ Regulatory shorthand: *CRR* = Reg. (EU) 575/2013 as amended by CRR3 (Reg. (EU)
 | Variable time horizon (several reference dates per default) | Uses more information | Correlated observations; weighting choices |
 
 **Proposal:** fixed 12-month horizon for the prototype (`realised_ccf.horizon_months`), with the generalised cohort approach as a challenger once real data is available.
-**References:** CRR Art. 182(1); draft GL section 5.4. **Decision:** _pending_
+**References:** CRR Art. 182(1); draft GL section 5.4.
+**Decision:** Fixed 12-month horizon (reference date = default date − 12 months). The generalised cohort approach remains a possible challenger once real data is available. No config change needed.
 
 ## D002 — Floor and cap on realised CCF
 **Status: PROPOSED**

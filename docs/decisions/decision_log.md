@@ -96,10 +96,10 @@ Industry responses to the consultation flagged this inconsistency. Both are comp
 **Decision:** facility-weighted, following the draft GL. On the synthetic data it is 0.9–2.1 percentage points higher than the average of yearly averages in every segment, i.e. also the more conservative choice. Revisit when the final GL is published; the yearly average stays in the documentation as a sensitivity.
 
 ## D006 — Eligible risk drivers
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 Only information known **at the reference date** may be used. `limit_cut_flag` (bank cut the limit between reference date and default) is a strong driver in the data but would leak future information, so it is excluded. It remains useful to explain back-testing results and to monitor limit-management policy (CRR Art. 182(1)(h)).
-**Decision:** _pending_
+**Decision:** exclude `limit_cut_flag` and any other variable observed after the reference date. General rule for all future candidate drivers: a variable is eligible only if its value is known at the reference date.
 
 ## D007 — Estimation sample for final quantification
 **Status: PROPOSED**

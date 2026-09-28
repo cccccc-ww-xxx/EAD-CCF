@@ -184,7 +184,7 @@ def segment_final_table(final: pd.DataFrame) -> pd.DataFrame:
     return (final.groupby("calib_segment")
                  .agg(n=("ccf_final", "size"), ccf_model=("ccf_model", "mean"),
                       ccf_calibrated=("ccf_calibrated", "mean"),
-                      downturn_factor=("downturn_factor", "mean"), moc=("moc", "mean"),
+                      downturn_addon=("downturn_addon", "mean"), moc=("moc", "mean"),
                       input_floor=("input_floor", "mean"), ccf_final=("ccf_final", "mean"),
                       share_floor_binding=("floor_binding", "mean"))
                  .reset_index())

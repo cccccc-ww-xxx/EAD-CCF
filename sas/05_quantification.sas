@@ -5,7 +5,7 @@
 
   model prediction
     -> x calibration factor  (mean prediction = segment LRA)
-    -> x downturn factor     (>= 1)
+    -> + downturn add-on     (downturn CCF - LRA, >= 0)
     -> + MoC (A + B + C)
     -> floored at 50% x SA CCF (CRR3 input floor)
 
@@ -80,7 +80,7 @@ quit;
 data derived.downturn;
   set derived.downturn;
   downturn_ccf    = max(downturn_observed, lra);
-  downturn_factor = ifn(lra > 0, downturn_ccf / lra, 1);
+  downturn_addon  = downturn_ccf - lra;   /* additive: robust when LRA <= 0 */
 run;
 
 /*---------------------------------------------------------------------------
@@ -134,7 +134,7 @@ quit;
 %macro final_ccf(in=, out=);
   proc sql;
     create table &out as
-    select s.*, c.calibration_factor as _cf, d.lra as _lra, d.downturn_factor,
+    select s.*, c.calibration_factor as _cf, d.lra as _lra, d.downturn_addon,
            m.moc_total as moc
     from &in s
     left join derived.calibration_factors c on s.calib_segment = c.calib_segment
@@ -152,7 +152,7 @@ quit;
       calibration_factor = 1;
     end;
     ccf_calibrated   = ccf_model * calibration_factor;
-    ccf_downturn     = ccf_calibrated * coalesce(downturn_factor, 1);
+    ccf_downturn     = ccf_calibrated + coalesce(downturn_addon, 0);
     ccf_before_floor = ccf_downturn + coalesce(moc, 0);
     input_floor      = 0.5 * input(put(product, $sa_ccf.), 8.);
     ccf_final        = max(ccf_before_floor, input_floor);
@@ -169,7 +169,7 @@ quit;
 proc sql;
   create table derived.final_segment as
   select calib_segment, count(*) as n, mean(ccf_model) as ccf_model,
-         mean(ccf_calibrated) as ccf_calibrated, mean(downturn_factor) as downturn_factor,
+         mean(ccf_calibrated) as ccf_calibrated, mean(downturn_addon) as downturn_addon,
          mean(moc) as moc, mean(input_floor) as input_floor, mean(ccf_final) as ccf_final,
          mean(floor_binding) as share_floor_binding
   from derived.final_rds group by calib_segment order by calib_segment;

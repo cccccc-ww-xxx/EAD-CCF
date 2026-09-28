@@ -5,7 +5,7 @@ Order of application (EBA draft GL EBA/CP/2025/10 chapters 7, 9, 10):
 
     model prediction
       -> calibrated to segment long-run average           (calibration factor)
-      -> scaled to downturn level                         (downturn factor >= 1)
+      -> + downturn add-on = downturn CCF - LRA           (add-on >= 0)
       -> + margin of conservatism                         (MoC = A + B + C >= 0)
       -> floored at 50% x standardised CCF                 (CRR3 input floor)
 
@@ -46,6 +46,9 @@ def identify_downturn_years(df: pd.DataFrame, cfg: dict) -> dict:
 
 def downturn_by_segment(df: pd.DataFrame, lra: pd.Series, dt_years: list[int]) -> pd.DataFrame:
     """Downturn CCF = max(LRA, average realised CCF in downturn years).
+    The downturn effect is applied as an ADDITIVE add-on (downturn CCF - LRA).
+    A multiplicative factor (downturn / LRA) breaks down when the LRA is close
+    to zero or negative, which happens once negative CCFs are kept (D002).
 
     Segments with fewer than MIN_DT_OBS downturn observations fall back to the
     portfolio-level downturn/LRA ratio (flagged)."""
@@ -62,7 +65,7 @@ def downturn_by_segment(df: pd.DataFrame, lra: pd.Series, dt_years: list[int]) -
         rows.append({"calib_segment": seg, "lra": float(lra_val), "n_downturn_obs": len(s),
                      "downturn_observed": dt, "fallback_portfolio_ratio": fb,
                      "downturn_ccf": dt_final,
-                     "downturn_factor": dt_final / lra_val if lra_val > 0 else 1.0})
+                     "downturn_addon": dt_final - float(lra_val)})
     return pd.DataFrame(rows)
 
 
@@ -110,8 +113,8 @@ def final_ccf(df: pd.DataFrame, pred_raw: np.ndarray, calib: pd.Series,
     out["ccf_model"] = np.where(is_std, pred_raw, seg.map(lra))
     out["calibration_factor"] = np.where(is_std, seg.map(calib).fillna(1.0), 1.0)
     out["ccf_calibrated"] = out["ccf_model"] * out["calibration_factor"]
-    out["downturn_factor"] = seg.map(dt.set_index("calib_segment")["downturn_factor"]).fillna(1.0)
-    out["ccf_downturn"] = out["ccf_calibrated"] * out["downturn_factor"]
+    out["downturn_addon"] = seg.map(dt.set_index("calib_segment")["downturn_addon"]).fillna(0.0)
+    out["ccf_downturn"] = out["ccf_calibrated"] + out["downturn_addon"]
     out["moc"] = seg.map(moc.set_index("calib_segment")["moc_total"]).fillna(0.0)
     out["ccf_before_floor"] = out["ccf_downturn"] + out["moc"]
     sa = df["product"].map({k: v["sa_ccf"] for k, v in cfg["products"].items()})

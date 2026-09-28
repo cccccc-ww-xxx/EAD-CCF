@@ -27,14 +27,21 @@ Regulatory shorthand: *CRR* = Reg. (EU) 575/2013 as amended by CRR3 (Reg. (EU)
 **Decision:** Fixed 12-month horizon (reference date = default date − 12 months). The generalised cohort approach remains a possible challenger once real data is available. No config change needed.
 
 ## D002 — Floor and cap on realised CCF
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
-- Negative realised CCFs (repayments between reference date and default) are floored at 0 for estimation. Raw values are kept (`ccf_raw`, `flag_negative_raw`).
-- No cap: CCFs above 100% (over-limit drawing) are kept, because capping would underestimate EAD.
-- For the fractional-logit fit only, the target is capped at 100% (the method needs a target in [0, 1]); calibration to the long-run average uses the **uncapped** values, so the cap does not reduce the final estimate.
-- The impact of "cap vs no cap" is quantified as MoC category B.
+**Decision:**
+- **Negative CCFs (repayments):** kept for STANDARD facilities (utilisation < 95%); floored at 0 for ROI and FULLY_DRAWN facilities.
+- **CCFs above 100%:** no cap. Over-limit drawing is real exposure.
+- Raw values are always kept (`ccf_raw`, `flag_negative_raw`).
+- For the fractional-logit fit only, the target is restricted to [0, 100%]. Calibration to the long-run average uses the unrestricted values, so this does not change the final level.
 
-**References:** draft GL section 5.5. **Decision:** _pending_
+**Why the hybrid:** keeping negatives everywhere was tested first. In the near-fully-drawn segments the stabilised denominator (D003) is small, so repayments dominate and the long-run average became negative (−0.16 to +0.01). An average CCF below zero implies an EAD below today's drawn amount, which is not defensible. Under the hybrid those segments have a long-run average of 0.29–0.40.
+
+**Consequence for downturn (see D008):** the downturn adjustment was changed from a multiplicative factor (downturn ÷ LRA) to an additive add-on (downturn − LRA). The multiplicative form broke down when the LRA was near zero (a ×26 factor in one test).
+
+**Supervisory note:** keeping negatives for standard facilities lowers their long-run average (by 0.08–0.13 for the 50–95% utilisation band). Expect validation and the ECB to ask for justification. Supporting analysis to prepare: share of negative CCFs, their causes (repayment vs. limit cuts), and sensitivity with a 0 floor.
+
+**References:** CRR Art. 4(1)(56); draft GL section 5.5.
 
 ## D003 — Region of instability and fully drawn facilities
 **Status: PROPOSED**
@@ -82,7 +89,7 @@ Models are developed on the development sample and tested out-of-time (default y
 ## D008 — Downturn period identification
 **Status: PROPOSED**
 
-Downturn years = union of (i) the two years with the highest average realised CCF and (ii) macro-economic candidate years (2012–2013 euro-area crisis, 2020 COVID-19). Downturn CCF = max(LRA, average realised CCF in downturn years) per segment; segments with fewer than 30 downturn observations use the portfolio-level ratio. To be aligned with the bank's downturn framework for LGD.
+Downturn years = union of (i) the two years with the highest average realised CCF and (ii) macro-economic candidate years (2012–2013 euro-area crisis, 2020 COVID-19). Downturn CCF = max(LRA, average realised CCF in downturn years) per segment, applied as an additive add-on (downturn CCF − LRA) on top of the calibrated CCF; segments with fewer than 30 downturn observations use the portfolio-level ratio. To be aligned with the bank's downturn framework for LGD.
 **References:** draft GL chapter 10. **Decision:** _pending_
 
 ## D009 — Margin of conservatism

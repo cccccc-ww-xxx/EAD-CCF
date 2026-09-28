@@ -40,14 +40,27 @@ class TestRealisedCCF(unittest.TestCase):
         self.assertAlmostEqual(self.df.loc[0, "ccf_realised"], 0.5)
         self.assertEqual(self.df.loc[0, "facility_type"], "STANDARD")
 
-    def test_negative_floored(self):
+    def test_negative_kept(self):
+        # D002 approved: negative CCFs (repayments) are kept for estimation
         self.assertAlmostEqual(self.df.loc[1, "ccf_raw"], -100 / 600)
-        self.assertEqual(self.df.loc[1, "ccf_realised"], 0.0)
+        self.assertAlmostEqual(self.df.loc[1, "ccf_realised"], -100 / 600)
+        self.assertEqual(self.df.loc[1, "ccf_model_target"], 0.0)  # fit target stays in [0, 1]
         self.assertEqual(self.df.loc[1, "flag_negative_raw"], 1)
+
+    def test_floor_option_still_works(self):
+        cfg = {**CFG, "realised_ccf": {**CFG["realised_ccf"], "floor_standard": 0.0}}
+        df = realised_ccf.compute_realised_ccf(pd.DataFrame([facility(1000, 400, 300)]), cfg)
+        self.assertEqual(df.loc[0, "ccf_realised"], 0.0)
 
     def test_above_one_not_capped(self):
         self.assertAlmostEqual(self.df.loc[2, "ccf_realised"], 700 / 600)
         self.assertEqual(self.df.loc[2, "ccf_model_target"], 1.0)  # capped for the fit only
+
+    def test_near_full_repayment_floored(self):
+        # D002 hybrid: ROI facility repaying 20 -> -20/50 = -0.4, floored at 0
+        df = realised_ccf.compute_realised_ccf(pd.DataFrame([facility(1000, 990, 970)]), CFG)
+        self.assertEqual(df.loc[0, "facility_type"], "ROI")
+        self.assertEqual(df.loc[0, "ccf_realised"], 0.0)
 
     def test_region_of_instability(self):
         self.assertEqual(self.df.loc[3, "facility_type"], "ROI")
@@ -103,7 +116,7 @@ class TestQuantificationAndValidation(unittest.TestCase):
         df = pd.DataFrame({"calib_segment": ["CORP_RCF/U1_lt50"], "product": ["CORP_RCF"],
                            "facility_type": ["STANDARD"], "util_band": ["U1_lt50"]})
         dt = pd.DataFrame({"calib_segment": ["CORP_RCF/U1_lt50"], "lra": [0.1],
-                           "downturn_factor": [1.0]})
+                           "downturn_addon": [0.0]})
         moc = pd.DataFrame({"calib_segment": ["CORP_RCF/U1_lt50"], "moc_total": [0.0]})
         out = quantification.final_ccf(df, np.array([0.05]), pd.Series({"CORP_RCF/U1_lt50": 1.0}),
                                        dt, moc, CFG)

@@ -49,14 +49,17 @@ def compute_realised_ccf(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
                                       np.maximum(out["undrawn_ref"], notional))
     ccf = out["extra_drawing"] / out["ccf_denominator"]
 
-    # floor / cap on the realised CCF used for estimation
-    if rc.get("floor") is not None:
-        ccf = ccf.clip(lower=rc["floor"])
+    # floor on the realised CCF used for estimation (D002: depends on facility type)
+    std = out["facility_type"] == "STANDARD"
+    if rc.get("floor_standard") is not None:
+        ccf = ccf.where(~std, ccf.clip(lower=rc["floor_standard"]))
+    if rc.get("floor_near_full") is not None:
+        ccf = ccf.where(std, ccf.clip(lower=rc["floor_near_full"]))
     if rc.get("cap") is not None:
         ccf = ccf.clip(upper=rc["cap"])
     out["ccf_realised"] = ccf
 
-    # capped target for the fractional logit only
+    # target for the fractional logit only, restricted to [0, model_cap]
     out["ccf_model_target"] = ccf.clip(0, rc["model_cap"])
 
     out["flag_negative_raw"] = (out["extra_drawing"] < 0).astype(int)

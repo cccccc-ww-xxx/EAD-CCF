@@ -168,7 +168,7 @@ def write_all(R: dict, P: dict) -> None:
 - Realised CCF follows the CRR3 facility-level definition with a 12-month fixed horizon. {ft.get('ROI', 0):,} facilities lie in the region of instability and {ft.get('FULLY_DRAWN', 0):,} were fully drawn at reference date; both use a stabilised denominator (decision D003).
 - Selected risk-differentiation model: **{sel}** (method ladder, section 5). Out-of-time MAE {pm(sel,'OOT','MAE'):.4f} vs benchmark {pm('benchmark','OOT','MAE'):.4f}; Spearman {pm(sel,'OOT','spearman'):.3f} vs {pm('benchmark','OOT','spearman'):.3f}.
 - Downturn years: data-driven {dty['data_driven']}, macro candidates {dty['macro_candidates']}, selected {dty['selected']}.
-- Final CCFs include calibration to the long-run average, a downturn factor, MoC (categories A+B+C) and the CRR3 input floor (50% × SA CCF).
+- Final CCFs include calibration to the long-run average, an additive downturn add-on, MoC (categories A+B+C) and the CRR3 input floor (50% × SA CCF).
 - On the synthetic performing portfolio, IRB EAD is **{tot['ead_irb_over_sa']:.1%}** of standardised EAD; the input floor binds for {tot['share_floor_binding']:.1%} of facilities.
 - Out-of-time calibration t-test: {int((t_oot['result']=='UNDERESTIMATION').sum())} of {len(t_oot)} segments show significant underestimation before downturn/MoC; after final adjustments: {int((t_fin['result']=='UNDERESTIMATION').sum())} of {len(t_fin)}.
 
@@ -207,7 +207,7 @@ Missing ratings are imputed with the development-sample median plus a missing-in
 | ROI | {cfg['realised_ccf']['roi_threshold']:.0%} ≤ utilisation < 100% | denominator = max(undrawn, {1-cfg['realised_ccf']['roi_threshold']:.0%} × limit) |
 | FULLY_DRAWN | undrawn = 0 | denominator = {1-cfg['realised_ccf']['roi_threshold']:.0%} × limit |
 
-Floor at {cfg['realised_ccf']['floor']}, cap: {cfg['realised_ccf']['cap']} (decision D002). For the fractional-logit fit only, the target is capped at {cfg['realised_ccf']['model_cap']:.0%}; calibration uses the uncapped values.
+Floor: negative CCFs (repayments) are kept for STANDARD facilities and floored at {cfg['realised_ccf']['floor_near_full']:.0%} for ROI / FULLY_DRAWN facilities; cap: {'none — CCFs above 100% are kept' if cfg['realised_ccf']['cap'] is None else cfg['realised_ccf']['cap']} (decision D002). For the fractional-logit fit only, the target is restricted to [0, {cfg['realised_ccf']['model_cap']:.0%}]; calibration to the long-run average uses the unrestricted values, so the restriction does not change the final level.
 
 {md_table(R['ccf_distribution'], {'n': '{:.0f}'})}
 

@@ -73,7 +73,13 @@ data derived.rds;
   else ccf_denominator = max(undrawn_ref, (1 - &roi_threshold) * limit_ref);
 
   ccf_realised = extra_drawing / ccf_denominator;
-  if not missing(&ccf_floor) then ccf_realised = max(ccf_realised, &ccf_floor);
+  /* D002: floor depends on facility type */
+  if facility_type = 'STANDARD' then do;
+    if not missing(&floor_standard) then ccf_realised = max(ccf_realised, &floor_standard);
+  end;
+  else do;
+    if not missing(&floor_near_full) then ccf_realised = max(ccf_realised, &floor_near_full);
+  end;
   if not missing(&ccf_cap)   then ccf_realised = min(ccf_realised, &ccf_cap);
 
   /* target for the fractional logit only: capped to [0, model_cap] */

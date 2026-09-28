@@ -22,7 +22,9 @@ options mprint nosymbolgen fullstimer;
 
 /* --- realised CCF ----------------------------------------------------------- */
 %let roi_threshold   = 0.95;   /* utilisation >= this -> region of instability   */
-%let ccf_floor       = 0;      /* floor on realised CCF ('.' = no floor)         */
+/* D002 approved (hybrid): negatives kept for STANDARD, floored at 0 for ROI / FULLY_DRAWN */
+%let floor_standard  = .;      /* '.' = no floor                                  */
+%let floor_near_full = 0;
 %let ccf_cap         = .;      /* cap on realised CCF   ('.' = no cap)           */
 %let model_cap       = 1;      /* cap used only for the fractional-logit target  */
 

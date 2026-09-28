@@ -33,8 +33,11 @@ products:
 realised_ccf:
   horizon_months: 12            # [DECISION] fixed-horizon approach: reference date = default date - 12m
   roi_threshold: 0.95           # [DECISION] utilisation >= this -> "region of instability"
-  floor: 0.0                    # [DECISION] realised CCF floored at 0 (negative = repayment)
-  cap: null                     # [DECISION] null = no cap on realised CCF (can exceed 100%)
+  # D002 APPROVED (hybrid): negative CCFs (repayments) kept for STANDARD facilities,
+  # floored at 0 for ROI / FULLY_DRAWN (stabilised denominator makes repayments dominate)
+  floor_standard: null
+  floor_near_full: 0.0
+  cap: null                     # D002 APPROVED: no cap on realised CCF (can exceed 100%)
   model_cap: 1.0                # cap used ONLY for the fractional-logit fit (needs [0,1] target)
 
 # --- Segmentation (benchmark + calibration segments) --------------------------

@@ -1,0 +1,31 @@
+{
+  "environment": {
+    "python": "3.11.15",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.8.0"
+  },
+  "selected_model": "fractional_logit",
+  "downturn_years": {
+    "data_driven": [
+      2013,
+      2020
+    ],
+    "macro_candidates": [
+      2012,
+      2013,
+      2020
+    ],
+    "overlap": [
+      2013,
+      2020
+    ],
+    "selected": [
+      2012,
+      2013,
+      2020
+    ]
+  },
+  "seed": 20260928
+}

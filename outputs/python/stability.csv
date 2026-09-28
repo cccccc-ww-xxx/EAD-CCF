@@ -1,0 +1,10 @@
+variable,psi,assessment
+utilisation,0.00795529906458193,stable
+log_limit,0.014225905048099539,stable
+grade_missing,0.007267148190613832,stable
+grade,0.007047093908026777,stable
+arrears_6m,0.0019396052618899859,stable
+log_mob,0.01326615658075247,stable
+prod_RET_CARD,4.578696761397712e-05,stable
+prod_SME_CRL,0.0032557637120369325,stable
+prod_CORP_RCF,5.385607190137361e-06,stable

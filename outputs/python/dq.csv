@@ -1,0 +1,11 @@
+check,n_fail,pct_fail
+DQ01 missing facility_id,0,0.0
+DQ02 duplicate facility_id,0,0.0
+DQ03 limit_ref <= 0,0,0.0
+DQ04 drawn_ref < 0,0,0.0
+DQ05 drawn_ref > limit_ref,0,0.0
+DQ06 ead_default < 0,0,0.0
+DQ07 reference_date >= default_date,0,0.0
+DQ08 missing grade_ref,161,2.013
+DQ09 grade_ref outside 1-12,0,0.0
+DQ10 missing ead_default,0,0.0

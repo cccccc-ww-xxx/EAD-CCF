@@ -1,0 +1,65 @@
+# =============================================================================
+# EAD-CCF model - central configuration
+# -----------------------------------------------------------------------------
+# Every methodological choice that needs a HUMAN decision is marked [DECISION]
+# and is logged in docs/decisions/. Values below are PROPOSED defaults for the
+# synthetic-data prototype, not approved methodology.
+# Both the Python pipeline and the SAS programs read the same values
+# (SAS: sas/00_config.sas mirrors this file - keep them in sync).
+# =============================================================================
+
+seed: 20260928
+
+# --- Synthetic data -----------------------------------------------------------
+synthetic:
+  n_defaults: 8000              # defaulted facilities in the reference data set
+  n_performing: 20000           # performing facilities (application portfolio)
+  first_default_year: 2010
+  last_default_year: 2024
+  application_date: "2025-12-31"
+  downturn_years_dgp: [2012, 2013, 2020]   # years where the data generator adds stress
+
+# --- Products and standardised CCFs ------------------------------------------
+# sa_ccf = CRR3 standardised-approach CCF used for the input floor.
+# [DECISION] Verify the SA CCF bucket for every product against CRR3 Art. 111
+# (e.g. 10% for unconditionally cancellable commitments, 40% for other commitments).
+products:
+  RET_OVD:  {label: "Retail overdraft",        segment: retail,    sa_ccf: 0.10}
+  RET_CARD: {label: "Retail credit card",      segment: retail,    sa_ccf: 0.10}
+  SME_CRL:  {label: "SME credit line",         segment: corporate, sa_ccf: 0.40}
+  CORP_RCF: {label: "Corporate revolving facility", segment: corporate, sa_ccf: 0.40}
+
+# --- Realised CCF -------------------------------------------------------------
+realised_ccf:
+  horizon_months: 12            # [DECISION] fixed-horizon approach: reference date = default date - 12m
+  roi_threshold: 0.95           # [DECISION] utilisation >= this -> "region of instability"
+  floor: 0.0                    # [DECISION] realised CCF floored at 0 (negative = repayment)
+  cap: null                     # [DECISION] null = no cap on realised CCF (can exceed 100%)
+  model_cap: 1.0                # cap used ONLY for the fractional-logit fit (needs [0,1] target)
+
+# --- Segmentation (benchmark + calibration segments) --------------------------
+segmentation:
+  utilisation_bands: [0.0, 0.50, 0.95, 1.0001]   # [DECISION] band edges; last band = RoI / fully drawn
+  band_labels: ["U1_lt50", "U2_50_95", "U3_ge95"]
+
+# --- Long-run average ---------------------------------------------------------
+lra:
+  method: "facility_weighted"   # [DECISION] "facility_weighted" (EBA draft GL) or "yearly_average" (old EGIM)
+
+# --- Development / out-of-time split -----------------------------------------
+split:
+  oot_first_year: 2022          # defaults from this year onwards = out-of-time sample
+
+# --- Downturn -----------------------------------------------------------------
+downturn:
+  n_worst_years: 2              # [DECISION] downturn years = N years with highest average realised CCF
+  macro_downturn_years: [2012, 2013, 2020]  # candidate years from macro indicators (to be justified)
+
+# --- Margin of conservatism ---------------------------------------------------
+moc:
+  bootstrap_samples: 1000       # category C (general estimation error)
+  confidence: 0.90              # [DECISION] quantile of bootstrap distribution
+
+# --- Performance testing ------------------------------------------------------
+validation:
+  ttest_alpha: 0.05

@@ -1,0 +1,13 @@
+# generated data - reproducible with python/run_pipeline.py
+data/raw/
+data/derived/
+outputs/sas/*.sas7bdat
+
+# never commit real client data
+*.sas7bdat
+*.xlsx
+
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store

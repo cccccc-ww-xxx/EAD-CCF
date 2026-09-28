@@ -102,16 +102,17 @@ Only information known **at the reference date** may be used. `limit_cut_flag` (
 **Decision:** exclude `limit_cut_flag` and any other variable observed after the reference date. General rule for all future candidate drivers: a variable is eligible only if its value is known at the reference date.
 
 ## D007 — Estimation sample for final quantification
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 Models are developed on the development sample and tested out-of-time (default years ≥ 2022). After successful OOT testing, the final long-run average, calibration, downturn and MoC use the **full** observation period, as the draft GL requires all relevant data to be used for the long-run average.
-**Decision:** _pending_
+**Decision:** develop on 2010–2021, test out-of-time on 2022–2024, then re-estimate all final parameters on 2010–2024.
 
 ## D008 — Downturn period identification
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 Downturn years = union of (i) the two years with the highest average realised CCF and (ii) macro-economic candidate years (2012–2013 euro-area crisis, 2020 COVID-19). Downturn CCF = max(LRA, average realised CCF in downturn years) per segment, applied as an additive add-on (downturn CCF − LRA) on top of the calibrated CCF; segments with fewer than 30 downturn observations use the portfolio-level ratio. To be aligned with the bank's downturn framework for LGD.
-**References:** draft GL chapter 10. **Decision:** _pending_
+**References:** draft GL chapter 10.
+**Decision:** downturn years = union of data-driven (2 highest-CCF years) and macro-economic candidates; on the synthetic data 2012, 2013 and 2020. Downturn applied as an additive add-on (see D002). On real data, the macro candidates must be justified with economic indicators and aligned with the LGD downturn periods.
 
 ## D009 — Margin of conservatism
 **Status: PROPOSED (placeholder)**

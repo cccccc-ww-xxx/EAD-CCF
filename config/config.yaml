@@ -58,11 +58,11 @@ lra:
 
 # --- Development / out-of-time split -----------------------------------------
 split:
-  oot_first_year: 2022          # defaults from this year onwards = out-of-time sample
+  oot_first_year: 2022          # D007 APPROVED: defaults from this year onwards = out-of-time sample
 
 # --- Downturn -----------------------------------------------------------------
 downturn:
-  n_worst_years: 2              # [DECISION] downturn years = N years with highest average realised CCF
+  n_worst_years: 2              # D008 APPROVED: downturn years = N years with highest average realised CCF
   macro_downturn_years: [2012, 2013, 2020]  # candidate years from macro indicators (to be justified)
 
 # --- Margin of conservatism ---------------------------------------------------

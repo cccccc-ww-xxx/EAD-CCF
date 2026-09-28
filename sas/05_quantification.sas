@@ -189,7 +189,7 @@ data _perf;
   if util_c < &band1_upper      then util_band = 'U1_lt50';
   else if util_c < &band2_upper then util_band = 'U2_50_95';
   else                               util_band = 'U3_ge95';
-  calib_segment = catx('/', product, util_band);
+  %assign_calib_segment;   /* D004 - macro defined in 00_config.sas */
   drop util_c;
 run;
 %build_features(in=_perf, out=_perf_x, grade_median=&grade_median_all);

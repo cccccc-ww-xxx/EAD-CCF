@@ -21,7 +21,8 @@ CFG = load_config()
 
 
 def facility(limit, drawn, ead, product="RET_OVD", year=2015, grade=8.0):
-    return {"facility_id": f"F{limit}-{drawn}-{ead}", "product": product, "limit_ref": limit,
+    return {"facility_id": f"F{limit}-{drawn}-{ead}", "product": product,
+            "segment": CFG["products"][product]["segment"], "limit_ref": limit,
             "drawn_ref": drawn, "ead_default": ead, "default_year": year,
             "reference_date": "2014-01-01", "default_date": "2015-01-01", "grade_ref": grade}
 
@@ -79,7 +80,9 @@ class TestSegmentsAndLRA(unittest.TestCase):
             facility(100, 10, 10), facility(100, 50, 50), facility(100, 96, 96),
             facility(100, 100, 100)]), CFG)
         self.assertEqual(list(df["util_band"]), ["U1_lt50", "U2_50_95", "U3_ge95", "U3_ge95"])
-        self.assertEqual(df.loc[0, "calib_segment"], "RET_OVD/U1_lt50")
+        # D004: <50% split retail/corporate, other bands pooled
+        self.assertEqual(list(df["calib_segment"]),
+                         ["RETAIL/U1_lt50", "ALL/U2_50_95", "ALL/U3_ge95", "ALL/U3_ge95"])
 
     def test_two_lra_methods(self):
         # year 2015: CCFs 0.2, 0.4, 0.6 (mean 0.4); year 2016: CCF 1.0

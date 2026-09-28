@@ -15,6 +15,7 @@
 %include "&sasdir/01_import.sas";
 %include "&sasdir/02_realised_ccf.sas";
 %include "&sasdir/03_lra.sas";
+%include "&sasdir/03b_segment_tests.sas";
 %include "&sasdir/04_fractional_logit.sas";
 %include "&sasdir/05_quantification.sas";
 %include "&sasdir/06_validation.sas";

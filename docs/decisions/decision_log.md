@@ -59,10 +59,30 @@ Near-fully-drawn facilities have a tiny undrawn amount, so the raw CCF explodes 
 **Decision:** Stabilised denominator max(undrawn, 5% × limit) for utilisation ≥ 95%, including fully drawn facilities; these form their own calibration segment. Threshold sensitivity (e.g. 90% and 98%) to be shown to validation at checkpoint B.
 
 ## D004 — Segmentation (benchmark and calibration segments)
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
-Segment = product × utilisation band at reference date (< 50%, 50–95%, ≥ 95%). Utilisation is the strongest driver in the literature and in the data; product reflects different limit-management policies. To be reviewed at checkpoint C (homogeneity and heterogeneity tests, minimum number of observations per segment).
-**References:** draft GL chapter 6. **Decision:** _pending_
+**Decision:** 4 calibration segments, chosen on test evidence:
+
+| Segment | Rule |
+|---|---|
+| RETAIL/U1_lt50 | retail products, utilisation < 50% |
+| CORPORATE/U1_lt50 | corporate products, utilisation < 50% |
+| ALL/U2_50_95 | all products, 50% ≤ utilisation < 95% |
+| ALL/U3_ge95 | all products, utilisation ≥ 95% incl. fully drawn (stabilised CCF, D003) |
+
+Product remains a risk driver inside the fractional logit; the segments only set the calibration level.
+
+**Evidence (synthetic data, see model documentation section 6.0):**
+- **< 50% vs 50–95%:** significant for every product (p < 0.0001); ordering held in 15 of 15 years.
+- **Within < 50%:** retail vs corporate differ (p < 0.001); overdraft vs card (p = 0.61) and SME vs corporate RCF (p = 0.35) do not.
+- **Within 50–95% and ≥ 95%:** no product pair differs significantly (all p > 0.06), so these bands are pooled.
+- **≥ 95% band:** kept separate for methodological reasons (different CCF formula).
+- **Size:** the smallest chosen segment has 1,365 defaults, and at least 56 in every year.
+
+**Alternatives considered:** 12 segments (product × band), rejected because most splits are not statistically supported; 6 segments (retail/corporate × band), rejected because retail vs corporate is not different above 50% utilisation.
+
+**On real data:** rerun the same tests (`python/ead_ccf/segment_tests.py`, `sas/03b_segment_tests.sas`); band edges and splits may change.
+**References:** draft GL chapter 6.
 
 ## D005 — Long-run average weighting
 **Status: PROPOSED**

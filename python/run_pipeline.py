@@ -18,7 +18,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ead_ccf import lra, models, quantification, realised_ccf, report, segmentation, validation
+from ead_ccf import (lra, models, quantification, realised_ccf, report, segment_tests,
+                     segmentation, validation)
 from ead_ccf.config import load_config, paths
 from ead_ccf.synthetic_data import generate_defaults, generate_performing
 
@@ -45,6 +46,14 @@ def main() -> dict:
     R["ccf_distribution"] = ccf_distribution(rds)
     R["rds"] = rds
     print("[2] realised CCF computed")
+
+    # ------------------------------------------------ 2b. segmentation tests
+    bands = cfg["segmentation"]["band_labels"]
+    R["seg_hetero"] = segment_tests.heterogeneity_tests(rds, bands)
+    R["seg_order"] = segment_tests.ordering_stability(rds, bands)
+    R["seg_rank"] = segment_tests.rank_correlation_by_year(rds)
+    R["seg_counts"] = segment_tests.segment_counts(rds)
+    R["seg_chosen"] = segment_tests.chosen_segment_tests(rds)
 
     # ----------------------------------------------------------------- 3. LRA
     R["yearly"] = lra.yearly_series(rds)
@@ -144,7 +153,7 @@ def main() -> dict:
     R["ccf_distribution"].to_csv(P["out_py"] / "recon_ccf_distribution.csv", index=False)
     R["lra_full"].to_csv(P["out_py"] / "recon_lra_by_segment.csv", index=False)
     R["fl_summary_full"].to_csv(P["out_py"] / "recon_fractional_logit.csv", index=False)
-    for key in ["dq", "performance", "downturn", "moc", "final_segment", "ttest_oot_calibrated",
+    for key in ["seg_hetero", "seg_order", "seg_rank", "seg_counts", "seg_chosen", "dq", "performance", "downturn", "moc", "final_segment", "ttest_oot_calibrated",
                 "ttest_final", "stability", "gbm_importance", "application", "yearly"]:
         R[key].to_csv(P["out_py"] / f"{key}.csv", index=False)
 

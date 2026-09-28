@@ -32,6 +32,26 @@ options mprint nosymbolgen fullstimer;
 %let band1_upper     = 0.50;   /* U1_lt50  : util <  0.50                         */
 %let band2_upper     = 0.95;   /* U2_50_95 : 0.50 <= util < 0.95 ; U3_ge95 : rest */
 
+/* --- D004 approved: how each utilisation band is split into segments ------- */
+/*     product = per product, segment = retail/corporate, all = pooled          */
+%let split_U1 = segment;
+%let split_U2 = all;
+%let split_U3 = all;
+
+/* Used inside a DATA step after util_band has been set */
+%macro assign_calib_segment;
+  length _split $8;
+  select (util_band);
+    when ('U1_lt50')  _split = "&split_U1";
+    when ('U2_50_95') _split = "&split_U2";
+    otherwise         _split = "&split_U3";
+  end;
+  if _split = 'product'      then calib_segment = catx('/', product, util_band);
+  else if _split = 'segment' then calib_segment = catx('/', upcase(segment), util_band);
+  else                            calib_segment = catx('/', 'ALL', util_band);
+  drop _split;
+%mend assign_calib_segment;
+
 /* --- LRA method: facility_weighted | yearly_average ------------------------- */
 %let lra_method      = facility_weighted;
 

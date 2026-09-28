@@ -242,6 +242,24 @@ Top-3 drivers by permutation importance: {', '.join(R['gbm_importance']['variabl
 
 ## 6. Risk quantification
 
+### 6.0 Segmentation and segmentation tests (checkpoint C, decision D004)
+Calibration segments: each utilisation band is split as configured in `segmentation.split_by` ({', '.join(f'{k}: {v}' for k, v in cfg['segmentation']['split_by'].items())}). Splits are kept only where the tests below show a significant difference; the ≥ 95% band is separate for methodological reasons (stabilised denominator, D003). Product remains a driver inside the fractional logit.
+
+**Chosen segments — size**
+{md_table(R['seg_counts'], {'n_defaults': '{:.0f}', 'min_per_year': '{:.0f}', 'mean_per_year': '{:.1f}'})}
+
+**Chosen segments — pairwise Welch t-tests (heterogeneity)**
+{md_table(R['seg_chosen'])}
+
+**Candidate splits — utilisation bands within product, products within band**
+{md_table(R['seg_hetero'], {'n_a': '{:.0f}', 'n_b': '{:.0f}'})}
+
+**Stability of the utilisation ordering by year** (share of default years in which the lower band has the higher average CCF)
+{md_table(R['seg_order'], {'n_years': '{:.0f}', 'share_years_order_holds': '{:.0%}'})}
+
+**Rank correlation of yearly segment averages with the full-period ranking**
+{md_table(R['seg_rank'], {'default_year': '{:.0f}', 'n_segments': '{:.0f}', 'min_defaults_in_segment': '{:.0f}'})}
+
 ### 6.1 Long-run average by segment (both weighting methods)
 {md_table(R['lra_full'], {'n_facilities': '{:.0f}', 'n_years': '{:.0f}'})}
 

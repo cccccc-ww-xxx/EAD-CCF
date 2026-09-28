@@ -42,8 +42,15 @@ realised_ccf:
 
 # --- Segmentation (benchmark + calibration segments) --------------------------
 segmentation:
-  utilisation_bands: [0.0, 0.50, 0.95, 1.0001]   # [DECISION] band edges; last band = RoI / fully drawn
+  utilisation_bands: [0.0, 0.50, 0.95, 1.0001]   # band edges; last band = RoI / fully drawn
   band_labels: ["U1_lt50", "U2_50_95", "U3_ge95"]
+  # D004 APPROVED: how each utilisation band is split into calibration segments
+  #   product = one segment per product, segment = retail / corporate, all = pooled
+  # Result: RETAIL/U1_lt50, CORPORATE/U1_lt50, ALL/U2_50_95, ALL/U3_ge95
+  split_by:
+    U1_lt50: segment
+    U2_50_95: all
+    U3_ge95: all
 
 # --- Long-run average ---------------------------------------------------------
 lra:

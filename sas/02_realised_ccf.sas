@@ -93,7 +93,7 @@ data derived.rds;
   if util_c < &band1_upper      then util_band = 'U1_lt50';
   else if util_c < &band2_upper then util_band = 'U2_50_95';
   else                               util_band = 'U3_ge95';
-  calib_segment = catx('/', product, util_band);
+  %assign_calib_segment;   /* D004 - macro defined in 00_config.sas */
 
   sample = ifc(default_year >= &oot_first_year, 'OOT', 'DEV');
   drop util_c;

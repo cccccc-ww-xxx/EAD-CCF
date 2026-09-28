@@ -5,7 +5,10 @@
 > checkpoints are. Adapt every section to your bank's internal policies before use.
 
 ## 1. Project context
-- Goal: (re)build the EAD / CCF model for the in-scope BNP Paribas Fortis portfolio(s).
+- Goal: build a NEW own-estimate CCF model for the in-scope BNP Paribas Fortis revolving portfolio(s).
+  Fortis has no CCF model today (only a simple EAD model), so this is a new model / IRB
+  extension that will be submitted to the ECB for approval (D013). Explainability is a
+  hard requirement: every choice must be defensible in front of the ECB.
 - Primary language: **Python** (development, analysis, documentation).
   SAS equivalents are kept for every step (./sas/) and must stay in sync.
 - Data: **SYNTHETIC ONLY** (python/ead_ccf/synthetic_data.py). No client data in this repo, ever.

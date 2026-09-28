@@ -7,7 +7,8 @@
 
 | Item | Value |
 |---|---|
-| Model | Own-estimate CCF for undrawn revolving commitments (A-IRB) |
+| Model | Own-estimate CCF for undrawn revolving commitments (A-IRB) — **new model**; Fortis currently uses a simple EAD model and has no CCF model (D013) |
+| Regulatory status | To be submitted to the ECB for approval (new model / IRB extension) |
 | Portfolio | BNP Paribas Fortis revolving portfolios (prototype scope: 4 synthetic products) |
 | Model owner | *to be filled* |
 | Developer | *to be filled* |
@@ -390,6 +391,7 @@ All methodological choices are logged in `docs/decisions/decision_log.md` with t
 | D010 | Facility-level realised CCF vs borrower-level aggregation | OPEN ISSUE — under investigation |
 | D011 | Scope of own CCF estimates | REGULATORY REQUIREMENT — implemented (2026-09-28, Estelle) |
 | D012 | Calibration of the synthetic data to public disclosures | APPROVED (2026-09-28, Estelle) |
+| D013 | Model status: new model for ECB approval | APPROVED (2026-09-28, Estelle) |
 
 ## 10. Limitations and open issues
 1. Synthetic data only — results say nothing about the real portfolio.
@@ -400,6 +402,7 @@ All methodological choices are logged in `docs/decisions/decision_log.md` with t
 6. MoC quantification uses simple proxies (D009 interim) until the bank's MoC framework is implemented.
 7. Negative realised CCFs are kept for standard facilities (D002); this lowers their long-run average and needs a documented justification (causes of repayments, sensitivity with a 0 floor).
 8. SA CCF buckets per product to be verified.
+10. New model (D013): availability and history of limit and drawn amounts 12 months before default in the bank's systems not yet confirmed; comparison with the current simple EAD model not yet included (its specification is needed).
 9. SAS implementation written but not yet run in the bank environment; reconciliation not yet performed.
 
 ## 11. Reproducibility

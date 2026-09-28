@@ -149,3 +149,16 @@ CCF levels could not be calibrated: BNP Paribas Fortis does not publish EU CR6. 
 - Large-corporate defaults excluded from estimation rose from 277 to 413.
 - All four segments remain significantly different (retail vs corporate below 50% utilisation now only just: p = 0.047).
 - The fractional logit still beats the benchmark out-of-time.
+
+## D013 — Model status: new model for ECB approval
+**Status: APPROVED (2026-09-28, Estelle)**
+
+**Context:** BNP Paribas Fortis currently has no CCF model; EAD is produced by a simple EAD model. The own-estimate CCF model is therefore a **completely new model**, not a rebuild.
+
+**Decision:** build the new model and present it to the ECB for approval. Explainability is a hard requirement. This favours the method ladder's transparent models (segment averages, fractional logit) over black-box methods, and makes documented human decisions essential.
+
+**Consequences:**
+- **Regulatory classification:** introducing own CCF estimates is expected to be an extension of the IRB approach requiring prior ECB approval (Commission Delegated Regulation (EU) 529/2014 on material model changes and extensions). To be confirmed with validation / model risk.
+- **Data availability:** the bank never estimated CCF, so it must be confirmed that limit and drawn amounts 12 months before default, limit changes and the revolving status are stored, and from which year. This drives representativeness and MoC category A.
+- **Benchmark against current practice:** the ECB will ask whether the new model improves on the current simple EAD model. Its specification is needed to add it to the pipeline as a benchmark.
+- **Existing figures:** the ECB CCF/EAD back-testing templates (FRBNP-CR-390) back-test EAD, not CCF (about 95.8% missing CCF), so they cannot calibrate CCF levels.

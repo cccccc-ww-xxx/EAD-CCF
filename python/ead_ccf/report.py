@@ -174,7 +174,7 @@ def write_all(R: dict, P: dict) -> None:
 
 ## 1. Executive summary
 
-- Reference data set: **{n:,} defaulted facilities**, default years {cfg['synthetic']['first_default_year']}–{cfg['synthetic']['last_default_year']}; development sample {R['n_dev']:,}, out-of-time sample (default year ≥ {cfg['split']['oot_first_year']}) {R['n_oot']:,}.
+- Reference data set: **{n:,} defaulted facilities** in scope of own CCF estimates ({R['n_out_of_scope']:,} large-corporate facilities excluded, D011), default years {cfg['synthetic']['first_default_year']}–{cfg['synthetic']['last_default_year']}; development sample {R['n_dev']:,}, out-of-time sample (default year ≥ {cfg['split']['oot_first_year']}) {R['n_oot']:,}.
 - Realised CCF follows the CRR3 facility-level definition with a 12-month fixed horizon. {ft.get('ROI', 0):,} facilities lie in the region of instability and {ft.get('FULLY_DRAWN', 0):,} were fully drawn at reference date; both use a stabilised denominator (decision D003).
 - Selected risk-differentiation model: **{sel}** (method ladder, section 5). Out-of-time MAE {pm(sel,'OOT','MAE'):.4f} vs benchmark {pm('benchmark','OOT','MAE'):.4f}; Spearman {pm(sel,'OOT','spearman'):.3f} vs {pm('benchmark','OOT','spearman'):.3f}.
 - Downturn years: data-driven {dty['data_driven']}, macro candidates {dty['macro_candidates']}, selected {dty['selected']}.
@@ -193,6 +193,15 @@ def write_all(R: dict, P: dict) -> None:
 | MoC framework, general estimation principles | EBA/GL/2017/16 |
 | Assessment methodology | Commission Delegated Regulation (EU) 2022/439 |
 | ECB supervisory expectations | ECB Guide to internal models release 4.1 (June 2026) withdrew CCF guidance pending EBA Guidelines |
+
+### 2.1 Scope of own CCF estimates (decision D011)
+Own CCF estimates are only allowed for undrawn revolving commitments (CRR3 Art. 166(8b)); all four synthetic products are revolving. Corporates with annual turnover above EUR {cfg['scope']['large_corporate_turnover_meur']} million may only use the Foundation IRB approach (CRR3 Art. 151(8)) and therefore receive the standardised CCF. They are excluded from the reference data set ({R['n_out_of_scope']:,} defaulted facilities) and from estimation.
+
+**Reference data set (defaulted facilities)**
+{md_table(R['scope'], {'n_facilities': '{:,.0f}', 'sum_limit': '{:,.0f}'})}
+
+**Application portfolio (performing facilities)**
+{md_table(R['scope_performing'], {'n_facilities': '{:,.0f}', 'sum_limit': '{:,.0f}'})}
 
 ## 3. Data
 

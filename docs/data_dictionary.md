@@ -19,10 +19,11 @@
 | limit_cut_flag | 0/1 | Bank cut the limit between reference date and default — **not a driver** (D006) |
 | limit_default | num | Limit at default |
 | ead_default | num | Drawn amount at default (realised EAD) |
+| annual_turnover_meur | num | Obligor annual turnover in EUR million (corporate only); > 500 = large corporate, F-IRB, out of scope (D011) |
 
 ## `data/raw/performing.csv` — application portfolio at 2025-12-31
 
-Same characteristics as above at the application date, without default information.
+Same characteristics as above at the application date, without default information (incl. `annual_turnover_meur`).
 
 ## Derived fields (`data/derived/rds_realised_ccf.csv`)
 

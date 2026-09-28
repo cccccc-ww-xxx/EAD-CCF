@@ -125,3 +125,12 @@ Prototype proxies: A = impact of missing ratings, B = impact of the cap choice (
 
 Current practice combines restructured facilities at borrower level. CRR Art. 4(1)(56) and the draft GL require a realised CCF per facility, with exceptions only for related contracts under an overarching agreement with comparable characteristics. The current practice must be assessed against this requirement before real-data development starts.
 **Decision (2026-09-28, Estelle):** investigate first. Next step: establish from the current EAD-CCF documentation and colleagues how restructured facilities are linked today, then assess against Art. 4(1)(56) and the related-contract exception. The prototype computes one realised CCF per facility in the meantime.
+
+## D011 — Scope of own CCF estimates
+**Status: REGULATORY REQUIREMENT — implemented (2026-09-28, Estelle)**
+
+- **Revolving only.** Own CCF estimates are allowed only for undrawn revolving commitments (CRR3 Art. 166(8b)). Non-revolving commitments receive the standardised CCF (40% for commitments, CRR3 Annex I / Art. 111). This cannot be changed by a stronger model or by agreement with the supervisor: it is set in the Regulation. A non-revolving EAD model can still be built for IFRS 9, stress testing or pricing, but not for own-funds requirements.
+- **Large corporates.** Corporates with annual turnover above EUR 500 million may only use Foundation IRB (CRR3 Art. 151(8)), so no own CCF estimates, even for revolving lines. In the prototype they are excluded from the reference data set and receive the standardised CCF in the application step.
+- **Real-data follow-up:** confirm the turnover source and definition (consolidated group turnover, reference date, fallback when missing), and list which Fortis revolving products are in scope.
+
+**References:** CRR3 Art. 151(8), 166(8b), 166(8c), 111 and Annex I; EBA draft GL EBA/CP/2025/10 section 4.1.

@@ -20,6 +20,9 @@ options mprint nosymbolgen fullstimer;
 /* --- general -------------------------------------------------------------- */
 %let seed            = 20260928;
 
+/* --- scope (D011): corporates above this turnover are F-IRB -> SA CCF ---- */
+%let large_corp_turnover = 500;   /* EUR million, CRR3 Art. 151(8) */
+
 /* --- realised CCF ----------------------------------------------------------- */
 %let roi_threshold   = 0.95;   /* utilisation >= this -> region of instability   */
 /* D002 approved (hybrid): negatives kept for STANDARD, floored at 0 for ROI / FULLY_DRAWN */

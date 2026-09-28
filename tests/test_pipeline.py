@@ -74,6 +74,19 @@ class TestRealisedCCF(unittest.TestCase):
         self.assertAlmostEqual(self.df.loc[4, "ccf_realised"], 0.5)
 
 
+class TestScope(unittest.TestCase):
+    def test_large_corporate_out_of_scope(self):
+        from ead_ccf import scope
+        df = pd.DataFrame({"facility_id": ["A", "B", "C", "D"],
+                           "product": ["CORP_RCF", "CORP_RCF", "SME_CRL", "RET_OVD"],
+                           "segment": ["corporate", "corporate", "corporate", "retail"],
+                           "limit_ref": [1, 1, 1, 1],
+                           "annual_turnover_meur": [600.0, 500.0, 20.0, np.nan]})
+        out = scope.flag_scope(df, CFG)
+        # > EUR 500m is F-IRB (out of scope); exactly 500 and retail stay in scope
+        self.assertEqual(list(out["airb_ccf_scope"]), [0, 1, 1, 1])
+
+
 class TestSegmentsAndLRA(unittest.TestCase):
     def test_bands(self):
         df = segmentation.assign_segments(pd.DataFrame([

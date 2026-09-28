@@ -1,0 +1,6 @@
+product,scope_reason,n_facilities,sum_limit
+CORP_RCF,"in scope: revolving, A-IRB eligible",886,1967428740.0
+CORP_RCF,"large corporate (turnover > EUR 500m): F-IRB, SA CCF",277,667610730.0
+RET_CARD,"in scope: revolving, A-IRB eligible",2355,9504510.0
+RET_OVD,"in scope: revolving, A-IRB eligible",2873,8483940.0
+SME_CRL,"in scope: revolving, A-IRB eligible",1609,133128670.0

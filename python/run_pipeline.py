@@ -18,7 +18,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from ead_ccf import (lra, models, quantification, realised_ccf, report, segment_tests,
+from ead_ccf import (lra, models, quantification, realised_ccf, report, scope, segment_tests,
                      segmentation, validation)
 from ead_ccf.config import load_config, paths
 from ead_ccf.synthetic_data import generate_defaults, generate_performing
@@ -39,6 +39,11 @@ def main() -> dict:
 
     # ---------------------------------------------------- 2. realised CCF + DQ
     R["dq"] = realised_ccf.data_quality_checks(defaults)
+    # scope (D011): large corporates are F-IRB -> excluded from own-CCF estimation
+    defaults = scope.flag_scope(defaults, cfg)
+    R["scope"] = scope.scope_summary(defaults)
+    R["n_out_of_scope"] = int((defaults["airb_ccf_scope"] == 0).sum())
+    defaults = defaults[defaults["airb_ccf_scope"] == 1]
     rds = realised_ccf.compute_realised_ccf(defaults, cfg)
     rds = segmentation.assign_segments(rds, cfg)
     rds.to_csv(P["derived"] / "rds_realised_ccf.csv", index=False)
@@ -141,9 +146,15 @@ def main() -> dict:
         perf_seg["drawn_ref"] >= perf_seg["limit_ref"], "FULLY_DRAWN",
         np.where(perf_seg["drawn_ref"] / perf_seg["limit_ref"] >= cfg["realised_ccf"]["roi_threshold"],
                  "ROI", "STANDARD"))
-    final_perf = quantification.final_ccf(perf_seg, raw_pred(perf_seg), calib,
+    perf_seg = scope.flag_scope(perf_seg, cfg)
+    R["scope_performing"] = scope.scope_summary(perf_seg)
+    perf_in = perf_seg[perf_seg["airb_ccf_scope"] == 1]
+    final_perf = quantification.final_ccf(perf_in, raw_pred(perf_in), calib,
                                           R["downturn"], R["moc"], cfg)
-    app = quantification.apply_to_portfolio(perf_seg, final_perf, cfg)
+    app_in = quantification.apply_to_portfolio(perf_in, final_perf, cfg)
+    app_in["ccf_approach"] = "A-IRB own estimate"
+    app_out = quantification.apply_standardised(perf_seg[perf_seg["airb_ccf_scope"] == 0], cfg)
+    app = pd.concat([app_in, app_out], ignore_index=True)
     app.to_csv(P["derived"] / "application_ead.csv", index=False)
     R["application"] = application_summary(app)
     print("[5] quantification and application done")
@@ -153,7 +164,7 @@ def main() -> dict:
     R["ccf_distribution"].to_csv(P["out_py"] / "recon_ccf_distribution.csv", index=False)
     R["lra_full"].to_csv(P["out_py"] / "recon_lra_by_segment.csv", index=False)
     R["fl_summary_full"].to_csv(P["out_py"] / "recon_fractional_logit.csv", index=False)
-    for key in ["seg_hetero", "seg_order", "seg_rank", "seg_counts", "seg_chosen", "dq", "performance", "downturn", "moc", "final_segment", "ttest_oot_calibrated",
+    for key in ["scope", "scope_performing", "seg_hetero", "seg_order", "seg_rank", "seg_counts", "seg_chosen", "dq", "performance", "downturn", "moc", "final_segment", "ttest_oot_calibrated",
                 "ttest_final", "stability", "gbm_importance", "application", "yearly"]:
         R[key].to_csv(P["out_py"] / f"{key}.csv", index=False)
 
@@ -200,12 +211,12 @@ def segment_final_table(final: pd.DataFrame) -> pd.DataFrame:
 
 
 def application_summary(app: pd.DataFrame) -> pd.DataFrame:
-    g = (app.groupby("product")
+    g = (app.groupby(["product", "ccf_approach"])
             .agg(n=("facility_id", "size"), limit=("limit_ref", "sum"), drawn=("drawn_ref", "sum"),
                  mean_ccf_final=("ccf_final", "mean"), share_floor_binding=("floor_binding", "mean"),
                  ead_irb=("ead_irb", "sum"), ead_sa=("ead_sa", "sum"))
             .reset_index())
-    tot = pd.DataFrame([{"product": "TOTAL", "n": g["n"].sum(), "limit": g["limit"].sum(),
+    tot = pd.DataFrame([{"product": "TOTAL", "ccf_approach": "all", "n": g["n"].sum(), "limit": g["limit"].sum(),
                          "drawn": g["drawn"].sum(), "mean_ccf_final": app["ccf_final"].mean(),
                          "share_floor_binding": app["floor_binding"].mean(),
                          "ead_irb": g["ead_irb"].sum(), "ead_sa": g["ead_sa"].sum()}])

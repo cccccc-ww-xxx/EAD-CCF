@@ -48,6 +48,18 @@ def _sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 
+def _turnover(seed: int, products) -> np.ndarray:
+    """Annual turnover (EUR million) for corporate obligors; NaN for retail.
+    Drawn from a SEPARATE random stream so adding it leaves all other fields unchanged.
+    About a quarter of CORP_RCF obligors exceed EUR 500m (large corporates, D011)."""
+    rng = np.random.default_rng(seed)
+    n = len(products)
+    sme = np.minimum(rng.lognormal(np.log(8), 1.0, n), 50.0)
+    large = rng.lognormal(np.log(250), 1.0, n)
+    out = np.where(products == "SME_CRL", sme, np.where(products == "CORP_RCF", large, np.nan))
+    return np.round(out, 1)
+
+
 def _draw_common(rng, n, products, defaulted: bool):
     """Characteristics shared by defaulted and performing facilities."""
     limit = np.array([rng.lognormal(*LIMIT_PARAMS[p]) for p in products])
@@ -166,6 +178,7 @@ def generate_defaults(cfg: dict) -> pd.DataFrame:
         "limit_cut_flag": limit_cut,
         "limit_default": limit_def,
         "ead_default": ead_default,
+        "annual_turnover_meur": _turnover(cfg["seed"] + 2, products),
     })
     return df.sort_values(["default_date", "facility_id"]).reset_index(drop=True)
 
@@ -192,4 +205,5 @@ def generate_performing(cfg: dict) -> pd.DataFrame:
         "months_on_book": mob,
         "arrears_flag_6m": arrears,
         "limit_cut_flag": 0,
+        "annual_turnover_meur": _turnover(cfg["seed"] + 3, products),
     })

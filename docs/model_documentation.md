@@ -19,12 +19,12 @@
 
 ## 1. Executive summary
 
-- Reference data set: **8,000 defaulted facilities**, default years 2010–2024; development sample 6,583, out-of-time sample (default year ≥ 2022) 1,417.
-- Realised CCF follows the CRR3 facility-level definition with a 12-month fixed horizon. 639 facilities lie in the region of instability and 813 were fully drawn at reference date; both use a stabilised denominator (decision D003).
-- Selected risk-differentiation model: **fractional_logit** (method ladder, section 5). Out-of-time MAE 0.3646 vs benchmark 0.3822; Spearman 0.346 vs 0.213.
+- Reference data set: **7,723 defaulted facilities** in scope of own CCF estimates (277 large-corporate facilities excluded, D011), default years 2010–2024; development sample 6,366, out-of-time sample (default year ≥ 2022) 1,357.
+- Realised CCF follows the CRR3 facility-level definition with a 12-month fixed horizon. 616 facilities lie in the region of instability and 783 were fully drawn at reference date; both use a stabilised denominator (decision D003).
+- Selected risk-differentiation model: **fractional_logit** (method ladder, section 5). Out-of-time MAE 0.3662 vs benchmark 0.3836; Spearman 0.352 vs 0.216.
 - Downturn years: data-driven [2012, 2020], macro candidates [2012, 2013, 2020], selected [2012, 2013, 2020].
 - Final CCFs include calibration to the long-run average, an additive downturn add-on, MoC (categories A+B+C) and the CRR3 input floor (50% × SA CCF).
-- On the synthetic performing portfolio, IRB EAD is **101.8%** of standardised EAD; the input floor binds for 0.6% of facilities.
+- On the synthetic performing portfolio, IRB EAD is **101.8%** of standardised EAD; the input floor binds for 0.5% of facilities.
 - Out-of-time calibration t-test: 0 of 4 segments show significant underestimation before downturn/MoC; after final adjustments: 0 of 4.
 
 ## 2. Scope and regulatory framework
@@ -38,6 +38,27 @@
 | MoC framework, general estimation principles | EBA/GL/2017/16 |
 | Assessment methodology | Commission Delegated Regulation (EU) 2022/439 |
 | ECB supervisory expectations | ECB Guide to internal models release 4.1 (June 2026) withdrew CCF guidance pending EBA Guidelines |
+
+### 2.1 Scope of own CCF estimates (decision D011)
+Own CCF estimates are only allowed for undrawn revolving commitments (CRR3 Art. 166(8b)); all four synthetic products are revolving. Corporates with annual turnover above EUR 500 million may only use the Foundation IRB approach (CRR3 Art. 151(8)) and therefore receive the standardised CCF. They are excluded from the reference data set (277 defaulted facilities) and from estimation.
+
+**Reference data set (defaulted facilities)**
+| product | scope_reason | n_facilities | sum_limit |
+|---|---|---|---|
+| CORP_RCF | in scope: revolving, A-IRB eligible | 886 | 1,967,428,740 |
+| CORP_RCF | large corporate (turnover > EUR 500m): F-IRB, SA CCF | 277 | 667,610,730 |
+| RET_CARD | in scope: revolving, A-IRB eligible | 2355 | 9,504,510 |
+| RET_OVD | in scope: revolving, A-IRB eligible | 2873 | 8,483,940 |
+| SME_CRL | in scope: revolving, A-IRB eligible | 1609 | 133,128,670 |
+
+**Application portfolio (performing facilities)**
+| product | scope_reason | n_facilities | sum_limit |
+|---|---|---|---|
+| CORP_RCF | in scope: revolving, A-IRB eligible | 2226 | 5,185,085,630 |
+| CORP_RCF | large corporate (turnover > EUR 500m): F-IRB, SA CCF | 739 | 1,618,427,890 |
+| RET_CARD | in scope: revolving, A-IRB eligible | 5967 | 23,583,020 |
+| RET_OVD | in scope: revolving, A-IRB eligible | 7034 | 21,383,430 |
+| SME_CRL | in scope: revolving, A-IRB eligible | 4034 | 344,619,480 |
 
 ## 3. Data
 
@@ -63,9 +84,9 @@ Missing ratings are imputed with the development-sample median plus a missing-in
 ### 3.3 Population by product and facility type
 | product | facility_type | n_facilities | sum_limit_ref | sum_drawn_ref | sum_ead_default | mean_ccf_realised |
 |---|---|---|---|---|---|---|
-| CORP_RCF | FULLY_DRAWN | 141 | 290,087,420 | 290,087,420 | 285,210,782 | 0.3602 |
-| CORP_RCF | ROI | 83 | 153,952,960 | 149,621,794 | 148,883,697 | 0.2764 |
-| CORP_RCF | STANDARD | 939 | 2,190,999,090 | 823,287,766 | 1,441,007,814 | 0.4077 |
+| CORP_RCF | FULLY_DRAWN | 111 | 224,412,060 | 224,412,060 | 220,843,107 | 0.3673 |
+| CORP_RCF | ROI | 60 | 101,897,460 | 99,365,648 | 99,230,479 | 0.3286 |
+| CORP_RCF | STANDARD | 715 | 1,641,119,220 | 617,878,481 | 1,082,136,939 | 0.4084 |
 | RET_CARD | FULLY_DRAWN | 232 | 933,750 | 933,750 | 934,995 | 0.4099 |
 | RET_CARD | ROI | 192 | 815,630 | 795,616 | 789,508 | 0.3246 |
 | RET_CARD | STANDARD | 1931 | 7,755,130 | 4,808,413 | 6,080,523 | 0.3211 |
@@ -90,9 +111,9 @@ Floor: negative CCFs (repayments) are kept for STANDARD facilities and floored a
 
 | product | facility_type | n | mean | p25 | median | p75 | share_zero | share_ge_one | share_negative_raw |
 |---|---|---|---|---|---|---|---|---|---|
-| CORP_RCF | FULLY_DRAWN | 141 | 0.3602 | 0.0000 | 0.0000 | 0.3246 | 0.6950 | 0.1418 | 0.5035 |
-| CORP_RCF | ROI | 83 | 0.2764 | 0.0000 | 0.0000 | 0.1098 | 0.6988 | 0.0602 | 0.4337 |
-| CORP_RCF | STANDARD | 939 | 0.4077 | 0.0635 | 0.4254 | 0.7256 | 0.1374 | 0.1118 | 0.0927 |
+| CORP_RCF | FULLY_DRAWN | 111 | 0.3673 | 0.0000 | 0.0000 | 0.3030 | 0.7027 | 0.1441 | 0.5225 |
+| CORP_RCF | ROI | 60 | 0.3286 | 0.0000 | 0.0000 | 0.1217 | 0.6833 | 0.0667 | 0.4167 |
+| CORP_RCF | STANDARD | 715 | 0.4084 | 0.0326 | 0.4307 | 0.7346 | 0.1441 | 0.1133 | 0.0937 |
 | RET_CARD | FULLY_DRAWN | 232 | 0.4099 | 0.0000 | 0.0000 | 0.3412 | 0.6336 | 0.1466 | 0.3664 |
 | RET_CARD | ROI | 192 | 0.3246 | 0.0000 | 0.0000 | 0.2107 | 0.6771 | 0.1198 | 0.4062 |
 | RET_CARD | STANDARD | 1931 | 0.3211 | 0.0000 | 0.4154 | 0.7368 | 0.1895 | 0.1150 | 0.1238 |
@@ -120,46 +141,46 @@ Candidate drivers are restricted to information available at the reference date.
 ### 5.2 Performance on standard facilities (models calibrated to segment LRA on development sample)
 | model | sample | n | mean_realised | mean_predicted | MAE | RMSE | R2 | spearman | EAD_pred_over_actual |
 |---|---|---|---|---|---|---|---|---|---|
-| fractional_logit | DEV | 5378 | 0.3782 | 0.3782 | 0.3775 | 0.4988 | 0.1191 | 0.3337 | 0.9802 |
-| fractional_logit | OOT | 1170 | 0.3353 | 0.3777 | 0.3646 | 0.4851 | 0.1202 | 0.3464 | 1.1076 |
-| gbm_challenger | DEV | 5378 | 0.3782 | 0.3782 | 0.3683 | 0.4902 | 0.1493 | 0.3858 | 0.9740 |
-| gbm_challenger | OOT | 1170 | 0.3353 | 0.3796 | 0.3643 | 0.4852 | 0.1196 | 0.3384 | 1.1083 |
-| benchmark | DEV | 5378 | 0.3782 | 0.3782 | 0.3969 | 0.5155 | 0.0589 | 0.2079 | 0.9704 |
-| benchmark | OOT | 1170 | 0.3353 | 0.3803 | 0.3822 | 0.5024 | 0.0563 | 0.2128 | 1.0921 |
+| fractional_logit | DEV | 5206 | 0.3767 | 0.3767 | 0.3810 | 0.5031 | 0.1183 | 0.3329 | 0.9847 |
+| fractional_logit | OOT | 1118 | 0.3351 | 0.3754 | 0.3662 | 0.4869 | 0.1214 | 0.3515 | 1.0981 |
+| gbm_challenger | DEV | 5206 | 0.3767 | 0.3767 | 0.3719 | 0.4945 | 0.1484 | 0.3841 | 0.9740 |
+| gbm_challenger | OOT | 1118 | 0.3351 | 0.3777 | 0.3661 | 0.4869 | 0.1214 | 0.3445 | 1.0929 |
+| benchmark | DEV | 5206 | 0.3767 | 0.3767 | 0.3999 | 0.5196 | 0.0596 | 0.2105 | 0.9758 |
+| benchmark | OOT | 1118 | 0.3351 | 0.3786 | 0.3836 | 0.5043 | 0.0576 | 0.2159 | 1.0830 |
 
 **Selected model: fractional_logit.**
 
 ### 5.3 Fractional logit — final estimates (full sample)
 | variable | coefficient | robust_se | z_value | p_value |
 |---|---|---|---|---|
-| intercept | -0.7250 | 0.2550 | -2.8433 | 0.0045 |
-| utilisation | -1.8064 | 0.0872 | -20.7084 | 0.0000 |
-| log_limit | 0.0309 | 0.0269 | 1.1497 | 0.2503 |
-| grade_missing | 0.2362 | 0.1299 | 1.8187 | 0.0690 |
-| grade | 0.1463 | 0.0079 | 18.5482 | 0.0000 |
-| arrears_6m | 0.5086 | 0.0407 | 12.4898 | 0.0000 |
-| log_mob | -0.0322 | 0.0275 | -1.1716 | 0.2414 |
-| prod_RET_CARD | -0.0787 | 0.0480 | -1.6396 | 0.1011 |
-| prod_SME_CRL | -0.3613 | 0.0997 | -3.6246 | 0.0003 |
-| prod_CORP_RCF | -0.6706 | 0.1828 | -3.6680 | 0.0002 |
+| intercept | -0.7080 | 0.2627 | -2.6955 | 0.0070 |
+| utilisation | -1.8349 | 0.0889 | -20.6322 | 0.0000 |
+| log_limit | 0.0292 | 0.0278 | 1.0473 | 0.2950 |
+| grade_missing | 0.2648 | 0.1335 | 1.9835 | 0.0473 |
+| grade | 0.1446 | 0.0080 | 17.9926 | 0.0000 |
+| arrears_6m | 0.5061 | 0.0416 | 12.1553 | 0.0000 |
+| log_mob | -0.0251 | 0.0280 | -0.8960 | 0.3703 |
+| prod_RET_CARD | -0.0759 | 0.0481 | -1.5777 | 0.1146 |
+| prod_SME_CRL | -0.3581 | 0.1023 | -3.4995 | 0.0005 |
+| prod_CORP_RCF | -0.6506 | 0.1905 | -3.4148 | 0.0006 |
 
 - `utilisation`: expected sign −, estimated − (as expected), p = 0.0000
 - `grade`: expected sign +, estimated + (as expected), p = 0.0000
 - `arrears_6m`: expected sign +, estimated + (as expected), p = 0.0000
-- Not significant at 5%: log_limit, grade_missing, log_mob, prod_RET_CARD. Candidates for removal at checkpoint C. (In the synthetic data-generating process, `log_limit` and `log_mob` have no true effect, so their non-significance is a check that the estimation recovers the truth.)
+- Not significant at 5%: log_limit, log_mob, prod_RET_CARD. Candidates for removal at checkpoint C. (In the synthetic data-generating process, `log_limit` and `log_mob` have no true effect, so their non-significance is a check that the estimation recovers the truth.)
 
 ### 5.4 Gradient-boosting challenger — permutation importance (OOT)
 | variable | mae_increase | std |
 |---|---|---|
-| utilisation | 0.0246 | 0.0030 |
-| grade | 0.0174 | 0.0030 |
-| arrears_6m | 0.0074 | 0.0012 |
-| log_limit | 0.0029 | 0.0021 |
-| log_mob | 0.0014 | 0.0010 |
-| prod_RET_CARD | 0.0003 | 0.0002 |
-| prod_CORP_RCF | 0.0002 | 0.0002 |
-| prod_SME_CRL | -0.0001 | 0.0001 |
-| grade_missing | -0.0001 | 0.0002 |
+| utilisation | 0.0258 | 0.0025 |
+| grade | 0.0181 | 0.0019 |
+| arrears_6m | 0.0071 | 0.0012 |
+| log_limit | 0.0023 | 0.0011 |
+| log_mob | 0.0011 | 0.0006 |
+| prod_RET_CARD | 0.0002 | 0.0001 |
+| prod_CORP_RCF | 0.0001 | 0.0001 |
+| grade_missing | -0.0001 | 0.0003 |
+| prod_SME_CRL | -0.0002 | 0.0001 |
 
 Top-3 drivers by permutation importance: utilisation, grade, arrears_6m. The challenger is used to check that no important driver or non-linearity is missing from the fractional logit; it is not proposed for production.
 
@@ -171,47 +192,47 @@ Calibration segments: each utilisation band is split as configured in `segmentat
 **Chosen segments — size**
 | calib_segment | n_defaults | min_per_year | mean_per_year |
 |---|---|---|---|
-| ALL/U2_50_95 | 3634 | 204 | 242.3 |
-| ALL/U3_ge95 | 1452 | 71 | 96.8 |
-| CORPORATE/U1_lt50 | 1365 | 56 | 91.0 |
+| ALL/U2_50_95 | 3567 | 199 | 237.8 |
+| ALL/U3_ge95 | 1399 | 67 | 93.3 |
+| CORPORATE/U1_lt50 | 1208 | 44 | 80.5 |
 | RETAIL/U1_lt50 | 1549 | 81 | 103.3 |
 
 **Chosen segments — pairwise Welch t-tests (heterogeneity)**
 | segment_a | segment_b | mean_a | mean_b | t_stat | p_value | result |
 |---|---|---|---|---|---|---|
-| ALL/U2_50_95 | ALL/U3_ge95 | 0.2565 | 0.3422 | -3.8598 | 0.0001 | different |
-| ALL/U2_50_95 | CORPORATE/U1_lt50 | 0.2565 | 0.4779 | -15.5394 | 0.0000 | different |
-| ALL/U2_50_95 | RETAIL/U1_lt50 | 0.2565 | 0.5435 | -20.3073 | 0.0000 | different |
-| ALL/U3_ge95 | CORPORATE/U1_lt50 | 0.3422 | 0.4779 | -6.0616 | 0.0000 | different |
-| ALL/U3_ge95 | RETAIL/U1_lt50 | 0.3422 | 0.5435 | -9.0199 | 0.0000 | different |
-| CORPORATE/U1_lt50 | RETAIL/U1_lt50 | 0.4779 | 0.5435 | -4.5413 | 0.0000 | different |
+| ALL/U2_50_95 | ALL/U3_ge95 | 0.2555 | 0.3457 | -3.9590 | 0.0001 | different |
+| ALL/U2_50_95 | CORPORATE/U1_lt50 | 0.2555 | 0.4821 | -15.2500 | 0.0000 | different |
+| ALL/U2_50_95 | RETAIL/U1_lt50 | 0.2555 | 0.5435 | -20.2525 | 0.0000 | different |
+| ALL/U3_ge95 | CORPORATE/U1_lt50 | 0.3457 | 0.4821 | -5.8679 | 0.0000 | different |
+| ALL/U3_ge95 | RETAIL/U1_lt50 | 0.3457 | 0.5435 | -8.6567 | 0.0000 | different |
+| CORPORATE/U1_lt50 | RETAIL/U1_lt50 | 0.4821 | 0.5435 | -4.0997 | 0.0000 | different |
 
 **Candidate splits — utilisation bands within product, products within band**
 | comparison | group | segment_a | segment_b | n_a | n_b | mean_a | mean_b | t_stat | p_value | result |
 |---|---|---|---|---|---|---|---|---|---|---|
-| band within product | CORP_RCF | CORP_RCF/U1_lt50 | CORP_RCF/U2_50_95 | 654 | 285 | 0.4679 | 0.2694 | 6.1867 | 0.0000 | different |
-| band within product | CORP_RCF | CORP_RCF/U2_50_95 | CORP_RCF/U3_ge95 | 285 | 224 | 0.2694 | 0.3292 | -1.0135 | 0.3115 | NOT different |
+| band within product | CORP_RCF | CORP_RCF/U1_lt50 | CORP_RCF/U2_50_95 | 497 | 218 | 0.4751 | 0.2563 | 5.8899 | 0.0000 | different |
+| band within product | CORP_RCF | CORP_RCF/U2_50_95 | CORP_RCF/U3_ge95 | 218 | 171 | 0.2563 | 0.3538 | -1.3474 | 0.1790 | NOT different |
 | band within product | RET_CARD | RET_CARD/U1_lt50 | RET_CARD/U2_50_95 | 553 | 1378 | 0.5367 | 0.2346 | 12.9750 | 0.0000 | different |
 | band within product | RET_CARD | RET_CARD/U2_50_95 | RET_CARD/U3_ge95 | 1378 | 424 | 0.2346 | 0.3713 | -3.1876 | 0.0015 | different |
 | band within product | RET_OVD | RET_OVD/U1_lt50 | RET_OVD/U2_50_95 | 996 | 1363 | 0.5472 | 0.2760 | 12.9195 | 0.0000 | different |
 | band within product | RET_OVD | RET_OVD/U2_50_95 | RET_OVD/U3_ge95 | 1363 | 514 | 0.2760 | 0.2919 | -0.4895 | 0.6246 | NOT different |
 | band within product | SME_CRL | SME_CRL/U1_lt50 | SME_CRL/U2_50_95 | 711 | 608 | 0.4870 | 0.2568 | 8.6844 | 0.0000 | different |
 | band within product | SME_CRL | SME_CRL/U2_50_95 | SME_CRL/U3_ge95 | 608 | 290 | 0.2568 | 0.3988 | -2.5962 | 0.0098 | different |
-| product within band | U1_lt50 | CORP_RCF/U1_lt50 | RET_CARD/U1_lt50 | 654 | 553 | 0.4679 | 0.5367 | -3.1631 | 0.0016 | different |
-| product within band | U1_lt50 | CORP_RCF/U1_lt50 | RET_OVD/U1_lt50 | 654 | 996 | 0.4679 | 0.5472 | -4.1071 | 0.0000 | different |
-| product within band | U1_lt50 | CORP_RCF/U1_lt50 | SME_CRL/U1_lt50 | 654 | 711 | 0.4679 | 0.4870 | -0.9290 | 0.3531 | NOT different |
+| product within band | U1_lt50 | CORP_RCF/U1_lt50 | RET_CARD/U1_lt50 | 497 | 553 | 0.4751 | 0.5367 | -2.6479 | 0.0082 | different |
+| product within band | U1_lt50 | CORP_RCF/U1_lt50 | RET_OVD/U1_lt50 | 497 | 996 | 0.4751 | 0.5472 | -3.4326 | 0.0006 | different |
+| product within band | U1_lt50 | CORP_RCF/U1_lt50 | SME_CRL/U1_lt50 | 497 | 711 | 0.4751 | 0.4870 | -0.5389 | 0.5900 | NOT different |
 | product within band | U1_lt50 | RET_CARD/U1_lt50 | RET_OVD/U1_lt50 | 553 | 996 | 0.5367 | 0.5472 | -0.5044 | 0.6141 | NOT different |
 | product within band | U1_lt50 | RET_CARD/U1_lt50 | SME_CRL/U1_lt50 | 553 | 711 | 0.5367 | 0.4870 | 2.2625 | 0.0238 | different |
 | product within band | U1_lt50 | RET_OVD/U1_lt50 | SME_CRL/U1_lt50 | 996 | 711 | 0.5472 | 0.4870 | 3.0789 | 0.0021 | different |
-| product within band | U2_50_95 | CORP_RCF/U2_50_95 | RET_CARD/U2_50_95 | 285 | 1378 | 0.2694 | 0.2346 | 1.0491 | 0.2946 | NOT different |
-| product within band | U2_50_95 | CORP_RCF/U2_50_95 | RET_OVD/U2_50_95 | 285 | 1363 | 0.2694 | 0.2760 | -0.1991 | 0.8423 | NOT different |
-| product within band | U2_50_95 | CORP_RCF/U2_50_95 | SME_CRL/U2_50_95 | 285 | 608 | 0.2694 | 0.2568 | 0.3479 | 0.7280 | NOT different |
+| product within band | U2_50_95 | CORP_RCF/U2_50_95 | RET_CARD/U2_50_95 | 218 | 1378 | 0.2563 | 0.2346 | 0.5842 | 0.5595 | NOT different |
+| product within band | U2_50_95 | CORP_RCF/U2_50_95 | RET_OVD/U2_50_95 | 218 | 1363 | 0.2563 | 0.2760 | -0.5300 | 0.5965 | NOT different |
+| product within band | U2_50_95 | CORP_RCF/U2_50_95 | SME_CRL/U2_50_95 | 218 | 608 | 0.2563 | 0.2568 | -0.0122 | 0.9903 | NOT different |
 | product within band | U2_50_95 | RET_CARD/U2_50_95 | RET_OVD/U2_50_95 | 1378 | 1363 | 0.2346 | 0.2760 | -1.7641 | 0.0778 | NOT different |
 | product within band | U2_50_95 | RET_CARD/U2_50_95 | SME_CRL/U2_50_95 | 1378 | 608 | 0.2346 | 0.2568 | -0.8035 | 0.4219 | NOT different |
 | product within band | U2_50_95 | RET_OVD/U2_50_95 | SME_CRL/U2_50_95 | 1363 | 608 | 0.2760 | 0.2568 | 0.6955 | 0.4869 | NOT different |
-| product within band | U3_ge95 | CORP_RCF/U3_ge95 | RET_CARD/U3_ge95 | 224 | 424 | 0.3292 | 0.3713 | -0.6482 | 0.5172 | NOT different |
-| product within band | U3_ge95 | CORP_RCF/U3_ge95 | RET_OVD/U3_ge95 | 224 | 514 | 0.3292 | 0.2919 | 0.6351 | 0.5258 | NOT different |
-| product within band | U3_ge95 | CORP_RCF/U3_ge95 | SME_CRL/U3_ge95 | 224 | 290 | 0.3292 | 0.3988 | -0.9697 | 0.3327 | NOT different |
+| product within band | U3_ge95 | CORP_RCF/U3_ge95 | RET_CARD/U3_ge95 | 171 | 424 | 0.3538 | 0.3713 | -0.2322 | 0.8166 | NOT different |
+| product within band | U3_ge95 | CORP_RCF/U3_ge95 | RET_OVD/U3_ge95 | 171 | 514 | 0.3538 | 0.2919 | 0.8824 | 0.3785 | NOT different |
+| product within band | U3_ge95 | CORP_RCF/U3_ge95 | SME_CRL/U3_ge95 | 171 | 290 | 0.3538 | 0.3988 | -0.5535 | 0.5802 | NOT different |
 | product within band | U3_ge95 | RET_CARD/U3_ge95 | RET_OVD/U3_ge95 | 424 | 514 | 0.3713 | 0.2919 | 1.6379 | 0.1018 | NOT different |
 | product within band | U3_ge95 | RET_CARD/U3_ge95 | SME_CRL/U3_ge95 | 424 | 290 | 0.3713 | 0.3988 | -0.4322 | 0.6657 | NOT different |
 | product within band | U3_ge95 | RET_OVD/U3_ge95 | SME_CRL/U3_ge95 | 514 | 290 | 0.2919 | 0.3988 | -1.8637 | 0.0630 | NOT different |
@@ -220,7 +241,7 @@ Calibration segments: each utilisation band is split as configured in `segmentat
 | product | higher | lower | n_years | share_years_order_holds |
 |---|---|---|---|---|
 | CORP_RCF | U1_lt50 | U2_50_95 | 15 | 100% |
-| CORP_RCF | U2_50_95 | U3_ge95 | 15 | 47% |
+| CORP_RCF | U2_50_95 | U3_ge95 | 15 | 40% |
 | RET_CARD | U1_lt50 | U2_50_95 | 15 | 100% |
 | RET_CARD | U2_50_95 | U3_ge95 | 15 | 27% |
 | RET_OVD | U1_lt50 | U2_50_95 | 15 | 100% |
@@ -231,28 +252,28 @@ Calibration segments: each utilisation band is split as configured in `segmentat
 **Rank correlation of yearly segment averages with the full-period ranking**
 | default_year | n_segments | min_defaults_in_segment | spearman_vs_full_period |
 |---|---|---|---|
-| 2010 | 4 | 81 | 1.0000 |
-| 2011 | 4 | 90 | 0.6000 |
-| 2012 | 4 | 135 | 0.8000 |
-| 2013 | 4 | 121 | 0.8000 |
-| 2014 | 4 | 86 | 1.0000 |
-| 2015 | 4 | 81 | 1.0000 |
-| 2016 | 4 | 79 | 0.8000 |
-| 2017 | 4 | 86 | 1.0000 |
-| 2018 | 4 | 75 | 1.0000 |
-| 2019 | 4 | 71 | 1.0000 |
-| 2020 | 4 | 130 | 1.0000 |
-| 2021 | 4 | 84 | 1.0000 |
-| 2022 | 4 | 56 | 1.0000 |
-| 2023 | 4 | 78 | 0.8000 |
-| 2024 | 4 | 76 | 0.8000 |
+| 2010 | 4 | 73 | 1.0000 |
+| 2011 | 4 | 78 | 0.6000 |
+| 2012 | 4 | 121 | 0.4000 |
+| 2013 | 4 | 112 | 0.8000 |
+| 2014 | 4 | 78 | 1.0000 |
+| 2015 | 4 | 74 | 1.0000 |
+| 2016 | 4 | 72 | 0.8000 |
+| 2017 | 4 | 79 | 1.0000 |
+| 2018 | 4 | 66 | 1.0000 |
+| 2019 | 4 | 67 | 1.0000 |
+| 2020 | 4 | 115 | 1.0000 |
+| 2021 | 4 | 76 | 1.0000 |
+| 2022 | 4 | 44 | 1.0000 |
+| 2023 | 4 | 70 | 0.8000 |
+| 2024 | 4 | 74 | 0.8000 |
 
 ### 6.1 Long-run average by segment (both weighting methods)
 | calib_segment | n_facilities | lra_facility_weighted | n_years | lra_yearly_average | difference |
 |---|---|---|---|---|---|
-| ALL/U2_50_95 | 3634 | 0.2565 | 15 | 0.2472 | 0.0093 |
-| ALL/U3_ge95 | 1452 | 0.3422 | 15 | 0.3213 | 0.0209 |
-| CORPORATE/U1_lt50 | 1365 | 0.4779 | 15 | 0.4680 | 0.0099 |
+| ALL/U2_50_95 | 3567 | 0.2555 | 15 | 0.2462 | 0.0093 |
+| ALL/U3_ge95 | 1399 | 0.3457 | 15 | 0.3238 | 0.0219 |
+| CORPORATE/U1_lt50 | 1208 | 0.4821 | 15 | 0.4721 | 0.0100 |
 | RETAIL/U1_lt50 | 1549 | 0.5435 | 15 | 0.5347 | 0.0087 |
 
 Selected method: **facility_weighted** (decision D005). The column `difference` shows the impact of the choice.
@@ -262,94 +283,95 @@ Selected method: **facility_weighted** (decision D005). The column `difference` 
 ### 6.2 Calibration factors
 | calib_segment | calibration_factor |
 |---|---|
-| ALL/U2_50_95 | 0.6798 |
-| CORPORATE/U1_lt50 | 0.9622 |
-| RETAIL/U1_lt50 | 0.9873 |
+| ALL/U2_50_95 | 0.6770 |
+| CORPORATE/U1_lt50 | 0.9634 |
+| RETAIL/U1_lt50 | 0.9845 |
 
 ### 6.3 Downturn
 Downturn years: data-driven (top 2 years by average realised CCF) = [2012, 2020]; macro candidates = [2012, 2013, 2020]; selected (union) = [2012, 2013, 2020].
 
 | calib_segment | lra | n_downturn_obs | downturn_observed | fallback_portfolio_ratio | downturn_ccf | downturn_addon |
 |---|---|---|---|---|---|---|
-| ALL/U2_50_95 | 0.2565 | 980 | 0.3501 | 0 | 0.3501 | 0.0935 |
-| ALL/U3_ge95 | 0.3422 | 398 | 0.5538 | 0 | 0.5538 | 0.2116 |
-| CORPORATE/U1_lt50 | 0.4779 | 388 | 0.5636 | 0 | 0.5636 | 0.0857 |
+| ALL/U2_50_95 | 0.2555 | 962 | 0.3496 | 0 | 0.3496 | 0.0941 |
+| ALL/U3_ge95 | 0.3457 | 382 | 0.5712 | 0 | 0.5712 | 0.2256 |
+| CORPORATE/U1_lt50 | 0.4821 | 348 | 0.5654 | 0 | 0.5654 | 0.0833 |
 | RETAIL/U1_lt50 | 0.5435 | 428 | 0.6380 | 0 | 0.6380 | 0.0945 |
 
 ### 6.4 Margin of conservatism
 | calib_segment | n | lra | moc_A_data | moc_B_method | moc_C_estimation | moc_total |
 |---|---|---|---|---|---|---|
-| ALL/U2_50_95 | 3634 | 0.2565 | 0.0021 | 0.0017 | 0.0126 | 0.0165 |
-| ALL/U3_ge95 | 1452 | 0.3422 | 0.0008 | 0.1285 | 0.0261 | 0.1554 |
-| CORPORATE/U1_lt50 | 1365 | 0.4779 | 0.0020 | 0.0015 | 0.0134 | 0.0169 |
-| RETAIL/U1_lt50 | 1549 | 0.5435 | 0.0015 | 0.0022 | 0.0126 | 0.0162 |
+| ALL/U2_50_95 | 3567 | 0.2555 | 0.0022 | 0.0018 | 0.0134 | 0.0174 |
+| ALL/U3_ge95 | 1399 | 0.3457 | 0.0007 | 0.1317 | 0.0262 | 0.1587 |
+| CORPORATE/U1_lt50 | 1208 | 0.4821 | 0.0029 | 0.0015 | 0.0139 | 0.0182 |
+| RETAIL/U1_lt50 | 1549 | 0.5435 | 0.0015 | 0.0022 | 0.0125 | 0.0162 |
 
 A = data deficiencies (missing ratings), B = methodological choice (cap at 100% vs none), C = general estimation error (bootstrap 1000 resamples, 90% quantile). **These are simple proxies for the prototype and must be replaced by the approved MoC framework.**
 
 ### 6.5 Final CCF by segment
 | calib_segment | n | ccf_model | ccf_calibrated | downturn_addon | moc | input_floor | ccf_final | share_floor_binding |
 |---|---|---|---|---|---|---|---|---|
-| ALL/U2_50_95 | 3634 | 0.3774 | 0.2565 | 0.0935 | 0.0165 | 0.0869 | 0.3666 | 0.0036 |
-| ALL/U3_ge95 | 1452 | 0.3422 | 0.3422 | 0.2116 | 0.1554 | 0.1031 | 0.7092 | 0.0000 |
-| CORPORATE/U1_lt50 | 1365 | 0.4967 | 0.4779 | 0.0857 | 0.0169 | 0.2000 | 0.5804 | 0.0000 |
-| RETAIL/U1_lt50 | 1549 | 0.5504 | 0.5435 | 0.0945 | 0.0162 | 0.0500 | 0.6542 | 0.0000 |
+| ALL/U2_50_95 | 3567 | 0.3774 | 0.2555 | 0.0941 | 0.0174 | 0.0847 | 0.3670 | 0.0028 |
+| ALL/U3_ge95 | 1399 | 0.3457 | 0.3457 | 0.2256 | 0.1587 | 0.0994 | 0.7299 | 0.0000 |
+| CORPORATE/U1_lt50 | 1208 | 0.5004 | 0.4821 | 0.0833 | 0.0182 | 0.2000 | 0.5836 | 0.0000 |
+| RETAIL/U1_lt50 | 1549 | 0.5520 | 0.5435 | 0.0945 | 0.0162 | 0.0500 | 0.6541 | 0.0000 |
 
 ## 7. Performance testing
 
 ### 7.1 Out-of-time calibration test (calibrated model, before downturn and MoC)
 | segment | n | mean_realised | mean_estimate | t_stat | p_value | result |
 |---|---|---|---|---|---|---|
-| ALL/U2_50_95 | 647 | 0.2179 | 0.2601 | -1.9288 | 0.9729 | ok |
-| ALL/U3_ge95 | 247 | 0.2214 | 0.3669 | -4.7462 | 1.0000 | ok |
-| CORPORATE/U1_lt50 | 226 | 0.4580 | 0.4925 | -1.3882 | 0.9168 | ok |
-| RETAIL/U1_lt50 | 297 | 0.4976 | 0.5463 | -2.2291 | 0.9867 | ok |
+| ALL/U2_50_95 | 630 | 0.2187 | 0.2589 | -1.8198 | 0.9654 | ok |
+| ALL/U3_ge95 | 239 | 0.2155 | 0.3725 | -5.1424 | 1.0000 | ok |
+| CORPORATE/U1_lt50 | 191 | 0.4663 | 0.4938 | -1.0024 | 0.8413 | ok |
+| RETAIL/U1_lt50 | 297 | 0.4976 | 0.5463 | -2.2276 | 0.9867 | ok |
 
 ### 7.2 Calibration test of final (conservative) CCFs, full sample
 | segment | n | mean_realised | mean_estimate | t_stat | p_value | result |
 |---|---|---|---|---|---|---|
-| ALL/U2_50_95 | 3634 | 0.2565 | 0.3666 | -11.4897 | 1.0000 | ok |
-| ALL/U3_ge95 | 1452 | 0.3422 | 0.7092 | -18.4576 | 1.0000 | ok |
-| CORPORATE/U1_lt50 | 1365 | 0.4779 | 0.5804 | -10.4722 | 1.0000 | ok |
-| RETAIL/U1_lt50 | 1549 | 0.5435 | 0.6542 | -11.4708 | 1.0000 | ok |
+| ALL/U2_50_95 | 3567 | 0.2555 | 0.3670 | -11.4892 | 1.0000 | ok |
+| ALL/U3_ge95 | 1399 | 0.3457 | 0.7299 | -18.7642 | 1.0000 | ok |
+| CORPORATE/U1_lt50 | 1208 | 0.4821 | 0.5836 | -9.6495 | 1.0000 | ok |
+| RETAIL/U1_lt50 | 1549 | 0.5435 | 0.6541 | -11.4651 | 1.0000 | ok |
 
 ### 7.3 Decile calibration (out-of-time)
 ![OOT deciles](../outputs/figures/fig3_oot_deciles.png)
 
 | bin | n | mean_predicted | mean_realised |
 |---|---|---|---|
-| 1 | 117 | 0.1508 | 0.0240 |
-| 2 | 117 | 0.2069 | 0.0496 |
-| 3 | 117 | 0.2471 | 0.1933 |
-| 4 | 117 | 0.2819 | 0.2876 |
-| 5 | 117 | 0.3227 | 0.3479 |
-| 6 | 117 | 0.3734 | 0.3707 |
-| 7 | 117 | 0.4414 | 0.4511 |
-| 8 | 117 | 0.5121 | 0.4593 |
-| 9 | 117 | 0.5749 | 0.5321 |
-| 10 | 117 | 0.6655 | 0.6376 |
+| 1 | 112 | 0.1513 | 0.0320 |
+| 2 | 112 | 0.2056 | 0.0416 |
+| 3 | 112 | 0.2447 | 0.1904 |
+| 4 | 111 | 0.2781 | 0.2722 |
+| 5 | 112 | 0.3172 | 0.3434 |
+| 6 | 112 | 0.3695 | 0.3789 |
+| 7 | 111 | 0.4389 | 0.4600 |
+| 8 | 112 | 0.5101 | 0.4591 |
+| 9 | 112 | 0.5737 | 0.5406 |
+| 10 | 112 | 0.6645 | 0.6331 |
 
 ### 7.4 Stability of drivers (PSI, development vs out-of-time)
 | variable | psi | assessment |
 |---|---|---|
-| utilisation | 0.0080 | stable |
-| log_limit | 0.0142 | stable |
-| grade_missing | 0.0073 | stable |
-| grade | 0.0070 | stable |
-| arrears_6m | 0.0019 | stable |
-| log_mob | 0.0133 | stable |
-| prod_RET_CARD | 0.0000 | stable |
-| prod_SME_CRL | 0.0033 | stable |
-| prod_CORP_RCF | 0.0000 | stable |
+| utilisation | 0.0091 | stable |
+| log_limit | 0.0132 | stable |
+| grade_missing | 0.0078 | stable |
+| grade | 0.0050 | stable |
+| arrears_6m | 0.0031 | stable |
+| log_mob | 0.0140 | stable |
+| prod_RET_CARD | 0.0002 | stable |
+| prod_SME_CRL | 0.0027 | stable |
+| prod_CORP_RCF | 0.0016 | stable |
 
 ## 8. Application to the performing portfolio
 
-| product | n | limit | drawn | mean_ccf_final | share_floor_binding | ead_irb | ead_sa | ead_irb_over_sa |
-|---|---|---|---|---|---|---|---|---|
-| CORP_RCF | 2965 | 6,803,513,520 | 2,684,264,430 | 0.4048 | 0.0293 | 4,391,124,366 | 4,331,964,066 | 1.0137 |
-| RET_CARD | 5967 | 23,583,020 | 9,170,469 | 0.4950 | 0.0000 | 16,542,450 | 10,611,724 | 1.5589 |
-| RET_OVD | 7034 | 21,383,430 | 8,316,879 | 0.5083 | 0.0000 | 15,193,227 | 9,623,534 | 1.5788 |
-| SME_CRL | 4034 | 344,619,480 | 133,511,687 | 0.4422 | 0.0094 | 229,281,548 | 217,954,804 | 1.0520 |
-| TOTAL | 20000 | 7,193,099,450 | 2,835,263,465 | 0.4756 | 0.0063 | 4,652,141,590 | 4,570,154,128 | 1.0179 |
+| product | ccf_approach | n | limit | drawn | mean_ccf_final | share_floor_binding | ead_irb | ead_sa | ead_irb_over_sa |
+|---|---|---|---|---|---|---|---|---|---|
+| CORP_RCF | A-IRB own estimate | 2226 | 5,185,085,630 | 2,075,616,337 | 0.4112 | 0.0256 | 3,378,866,693 | 3,319,404,054 | 1.0179 |
+| CORP_RCF | F-IRB (standardised CCF) | 739 | 1,618,427,890 | 608,648,093 | 0.4000 | 0.0000 | 1,012,560,012 | 1,012,560,012 | 1.0000 |
+| RET_CARD | A-IRB own estimate | 5967 | 23,583,020 | 9,170,469 | 0.4988 | 0.0000 | 16,579,815 | 10,611,724 | 1.5624 |
+| RET_OVD | A-IRB own estimate | 7034 | 21,383,430 | 8,316,879 | 0.5117 | 0.0000 | 15,220,448 | 9,623,534 | 1.5816 |
+| SME_CRL | A-IRB own estimate | 4034 | 344,619,480 | 133,511,687 | 0.4455 | 0.0087 | 229,697,051 | 217,954,804 | 1.0539 |
+| TOTAL | all | 20000 | 7,193,099,450 | 2,835,263,465 | 0.4792 | 0.0046 | 4,652,924,019 | 4,570,154,128 | 1.0181 |
 
 ## 9. Human judgement and decisions
 All methodological choices are logged in `docs/decisions/decision_log.md` with the options considered, regulatory references, the evidence and the human decision. Current status:
@@ -366,6 +388,7 @@ All methodological choices are logged in `docs/decisions/decision_log.md` with t
 | D008 | Downturn period identification | APPROVED (2026-09-28, Estelle) |
 | D009 | Margin of conservatism | INTERIM — proxies kept until the bank framework is applied |
 | D010 | Facility-level realised CCF vs borrower-level aggregation | OPEN ISSUE — under investigation |
+| D011 | Scope of own CCF estimates | REGULATORY REQUIREMENT — implemented (2026-09-28, Estelle) |
 
 ## 10. Limitations and open issues
 1. Synthetic data only — results say nothing about the real portfolio.

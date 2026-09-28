@@ -13,7 +13,7 @@ data raw.defaults;
   input facility_id $ obligor_id $ product $ segment $
         reference_date :yymmdd10. default_date :yymmdd10. default_year
         limit_ref drawn_ref grade_ref months_on_book arrears_flag_6m
-        limit_cut_flag limit_default ead_default;
+        limit_cut_flag limit_default ead_default annual_turnover_meur;
   format reference_date default_date yymmdd10.;
 run;
 
@@ -21,7 +21,8 @@ data raw.performing;
   infile "&root/data/raw/performing.csv" dsd firstobs=2 truncover;
   length facility_id $12 product $10 segment $10;
   input facility_id $ product $ segment $ application_date :yymmdd10.
-        limit_ref drawn_ref grade_ref months_on_book arrears_flag_6m limit_cut_flag;
+        limit_ref drawn_ref grade_ref months_on_book arrears_flag_6m limit_cut_flag
+        annual_turnover_meur;
   format application_date yymmdd10.;
 run;
 

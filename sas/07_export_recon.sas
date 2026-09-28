@@ -16,6 +16,7 @@
 %export(ds=derived.recon_fractional_logit, file=recon_fractional_logit);
 
 /* not strictly reconciled (bootstrap / RNG), exported for comparison */
+%export(ds=derived.scope,          file=scope);
 %export(ds=derived.dq,             file=dq);
 %export(ds=derived.downturn,       file=downturn);
 %export(ds=derived.moc,            file=moc);

@@ -178,9 +178,10 @@ quit;
 /*---------------------------------------------------------------------------
   6. Application to the performing portfolio
 ---------------------------------------------------------------------------*/
-data _perf;
+data _perf_all;
   set raw.performing;
-  length facility_type $12 util_band $10 calib_segment $24;
+  length facility_type $12 util_band $10 calib_segment $24 ccf_approach $26;
+  airb_ccf_scope = not (segment = 'corporate' and annual_turnover_meur > &large_corp_turnover);
   util = drawn_ref / limit_ref;
   if drawn_ref >= limit_ref            then facility_type = 'FULLY_DRAWN';
   else if util >= &roi_threshold       then facility_type = 'ROI';
@@ -192,28 +193,41 @@ data _perf;
   %assign_calib_segment;   /* D004 - macro defined in 00_config.sas */
   drop util_c;
 run;
+data _perf _perf_out;
+  set _perf_all;
+  if airb_ccf_scope then output _perf; else output _perf_out;
+run;
 %build_features(in=_perf, out=_perf_x, grade_median=&grade_median_all);
 %score_fractional_logit(pe=derived.recon_fractional_logit, in=_perf_x, out=_perf_scored);
 %final_ccf(in=_perf_scored, out=_perf_final);
 
 data derived.application_ead;
-  set _perf_final;
+  set _perf_final(in=a) _perf_out;
   undrawn = max(limit_ref - drawn_ref, 0);
-  if util >= &roi_threshold then denom = max(undrawn, (1 - &roi_threshold) * limit_ref);
-  else denom = undrawn;
-  ead_irb = drawn_ref + ccf_final * denom;
   ead_sa  = drawn_ref + input(put(product, $sa_ccf.), 8.) * undrawn;
+  if a then do;
+    ccf_approach = 'A-IRB own estimate';
+    if util >= &roi_threshold then denom = max(undrawn, (1 - &roi_threshold) * limit_ref);
+    else denom = undrawn;
+    ead_irb = drawn_ref + ccf_final * denom;
+  end;
+  else do;   /* D011: F-IRB large corporates -> standardised CCF */
+    ccf_approach  = 'F-IRB (standardised CCF)';
+    ccf_final     = input(put(product, $sa_ccf.), 8.);
+    floor_binding = 0;
+    ead_irb       = ead_sa;
+  end;
 run;
 
 proc sql;
   create table derived.application as
-  select product, count(*) as n, sum(limit_ref) as limit, sum(drawn_ref) as drawn,
+  select product, ccf_approach, count(*) as n, sum(limit_ref) as limit, sum(drawn_ref) as drawn,
          mean(ccf_final) as mean_ccf_final, mean(floor_binding) as share_floor_binding,
          sum(ead_irb) as ead_irb, sum(ead_sa) as ead_sa,
          calculated ead_irb / calculated ead_sa as ead_irb_over_sa
-  from derived.application_ead group by product
+  from derived.application_ead group by product, ccf_approach
   union all
-  select 'TOTAL', count(*), sum(limit_ref), sum(drawn_ref), mean(ccf_final),
+  select 'TOTAL', 'all', count(*), sum(limit_ref), sum(drawn_ref), mean(ccf_final),
          mean(floor_binding), sum(ead_irb), sum(ead_sa), sum(ead_irb) / sum(ead_sa)
   from derived.application_ead;
 quit;

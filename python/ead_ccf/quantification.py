@@ -124,6 +124,19 @@ def final_ccf(df: pd.DataFrame, pred_raw: np.ndarray, calib: pd.Series,
     return out
 
 
+def apply_standardised(perf: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    """Out-of-scope facilities (D011): EAD with the standardised CCF."""
+    undrawn = (perf["limit_ref"] - perf["drawn_ref"]).clip(lower=0)
+    sa = perf["product"].map({k: v["sa_ccf"] for k, v in cfg["products"].items()})
+    out = perf[["facility_id", "product", "calib_segment", "limit_ref", "drawn_ref"]].copy()
+    out["ccf_final"] = sa.to_numpy()
+    out["floor_binding"] = 0
+    out["ead_sa"] = perf["drawn_ref"] + sa * undrawn
+    out["ead_irb"] = out["ead_sa"]
+    out["ccf_approach"] = "F-IRB (standardised CCF)"
+    return out
+
+
 def apply_to_portfolio(perf: pd.DataFrame, final: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     """EAD for performing facilities: drawn + CCF x (stabilised) undrawn.
     Also returns the standardised-approach EAD for comparison."""

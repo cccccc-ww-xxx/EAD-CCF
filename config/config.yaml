@@ -29,6 +29,13 @@ products:
   SME_CRL:  {label: "SME credit line",         segment: corporate, sa_ccf: 0.40}
   CORP_RCF: {label: "Corporate revolving facility", segment: corporate, sa_ccf: 0.40}
 
+# --- Scope of own CCF estimates (D011, regulatory requirement) --------------
+# CRR3 Art. 166(8b): own CCF estimates only for undrawn revolving commitments.
+# CRR3 Art. 151(8): corporates with annual turnover > EUR 500m -> F-IRB only,
+# i.e. no own CCF estimates; they receive the standardised CCF.
+scope:
+  large_corporate_turnover_meur: 500
+
 # --- Realised CCF -------------------------------------------------------------
 realised_ccf:
   horizon_months: 12            # D001 APPROVED: fixed-horizon approach: reference date = default date - 12m

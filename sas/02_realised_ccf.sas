@@ -51,8 +51,27 @@ run;
 /*---------------------------------------------------------------------------
   2. Realised CCF per facility (the reference data set, "RDS")
 ---------------------------------------------------------------------------*/
-data derived.rds;
+/*---------------------------------------------------------------------------
+  Scope (D011): large corporates (turnover > EUR 500m) are F-IRB -> no own CCF.
+  They are excluded from the reference data set used for estimation.
+---------------------------------------------------------------------------*/
+data derived.rds_all;
   set raw.defaults;
+  length scope_reason $60;
+  airb_ccf_scope = not (segment = 'corporate' and annual_turnover_meur > &large_corp_turnover);
+  if airb_ccf_scope then scope_reason = 'in scope: revolving, A-IRB eligible';
+  else scope_reason = 'large corporate (turnover > EUR 500m): F-IRB, SA CCF';
+run;
+
+proc sql;
+  create table derived.scope as
+  select product, scope_reason, count(*) as n_facilities, sum(limit_ref) as sum_limit
+  from derived.rds_all group by product, scope_reason;
+quit;
+
+data derived.rds;
+  set derived.rds_all;
+  where airb_ccf_scope = 1;
   length facility_type $12 util_band $10 calib_segment $24 sample $3;
 
   undrawn_ref     = max(limit_ref - drawn_ref, 0);

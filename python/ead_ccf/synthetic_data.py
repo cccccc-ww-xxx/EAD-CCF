@@ -22,7 +22,20 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-PRODUCT_MIX = {"RET_OVD": 0.35, "RET_CARD": 0.30, "SME_CRL": 0.20, "CORP_RCF": 0.15}
+# Product mix, rating scale and large-corporate share are calibrated to public
+# BNP Paribas Fortis disclosures (config synthetic.calibration; docs/data_calibration.md).
+DEFAULT_PRODUCT_MIX = {"RET_OVD": 0.35, "RET_CARD": 0.30, "SME_CRL": 0.20, "CORP_RCF": 0.15}
+
+
+def _product_mix(cfg: dict) -> dict:
+    return cfg["synthetic"].get("calibration", {}).get("product_mix", DEFAULT_PRODUCT_MIX)
+
+
+def _to_rating_scale(grade12: np.ndarray, cfg: dict) -> np.ndarray:
+    """Map the internal 12-step generator scale to the bank's number of performing
+    grades (17 at BNP Paribas Fortis, Pillar 3 2025 p. 21). Order is preserved."""
+    k = cfg["synthetic"].get("calibration", {}).get("performing_grades", 12)
+    return np.rint(1 + (grade12 - 1) * (k - 1) / 11.0)
 
 # log-normal parameters (mu, sigma) of the limit at reference date, per product
 LIMIT_PARAMS = {
@@ -48,15 +61,39 @@ def _sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
 
 
-def _turnover(seed: int, products) -> np.ndarray:
+def _turnover(seed: int, products, limit, target_large_share: float | None) -> np.ndarray:
     """Annual turnover (EUR million) for corporate obligors; NaN for retail.
-    Drawn from a SEPARATE random stream so adding it leaves all other fields unchanged.
-    About a quarter of CORP_RCF obligors exceed EUR 500m (large corporates, D011)."""
+
+    SME credit lines: turnover below EUR 50m. Corporate RCF: turnover grows with the
+    limit (bigger clients, bigger lines) plus noise. The level is solved so that the
+    share of CORPORATE revolving LIMITS held by obligors above EUR 500m equals
+    `target_large_share` (about 50% at Fortis: F-IRB vs A-IRB Corporates - General,
+    EU CR7-A, Additional Pillar 3 2025 p. 20). Separate random stream, so other
+    fields are unchanged."""
     rng = np.random.default_rng(seed)
+    products = np.asarray(products)
+    limit = np.asarray(limit, dtype=float)
     n = len(products)
     sme = np.minimum(rng.lognormal(np.log(8), 1.0, n), 50.0)
-    large = rng.lognormal(np.log(250), 1.0, n)
-    out = np.where(products == "SME_CRL", sme, np.where(products == "CORP_RCF", large, np.nan))
+    z = 0.9 * (np.log(limit) - LIMIT_PARAMS["CORP_RCF"][0]) + rng.normal(0, 0.6, n)
+    corp = np.isin(products, ["SME_CRL", "CORP_RCF"])
+    rcf = products == "CORP_RCF"
+
+    def share(a):
+        t = np.exp(a + z)
+        big = rcf & (t > 500)
+        return limit[big].sum() / limit[corp].sum()
+
+    if target_large_share is None:
+        a = np.log(250)
+    else:  # bisection on the log-level
+        lo, hi = np.log(1.0), np.log(1e6)
+        for _ in range(100):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if share(mid) < target_large_share else (lo, mid)
+        a = (lo + hi) / 2
+    large = np.exp(a + z)
+    out = np.where(products == "SME_CRL", sme, np.where(rcf, large, np.nan))
     return np.round(out, 1)
 
 
@@ -84,7 +121,8 @@ def generate_defaults(cfg: dict) -> pd.DataFrame:
     rng = np.random.default_rng(cfg["seed"])
     n = s["n_defaults"]
 
-    products = rng.choice(list(PRODUCT_MIX), size=n, p=list(PRODUCT_MIX.values()))
+    mix = _product_mix(cfg)
+    products = rng.choice(list(mix), size=n, p=list(mix.values()))
     years = np.arange(s["first_default_year"], s["last_default_year"] + 1)
     dt_years = set(s["downturn_years_dgp"])
     year_w = np.array([1.5 if y in dt_years else 1.0 for y in years])
@@ -159,7 +197,7 @@ def generate_defaults(cfg: dict) -> pd.DataFrame:
     for i in share:
         obligor_id[i] = obligor_id[rng.choice(corp_idx)]
 
-    grade = grade.astype(float)
+    grade = _to_rating_scale(grade.astype(float), cfg)
     grade[rng.uniform(size=n) < 0.02] = np.nan  # missing ratings (MoC category A)
 
     df = pd.DataFrame({
@@ -178,7 +216,8 @@ def generate_defaults(cfg: dict) -> pd.DataFrame:
         "limit_cut_flag": limit_cut,
         "limit_default": limit_def,
         "ead_default": ead_default,
-        "annual_turnover_meur": _turnover(cfg["seed"] + 2, products),
+        "annual_turnover_meur": _turnover(cfg["seed"] + 2, products, limit,
+                                          cfg["synthetic"].get("calibration", {}).get("large_corporate_limit_share")),
     })
     return df.sort_values(["default_date", "facility_id"]).reset_index(drop=True)
 
@@ -188,7 +227,8 @@ def generate_performing(cfg: dict) -> pd.DataFrame:
     s = cfg["synthetic"]
     rng = np.random.default_rng(cfg["seed"] + 1)
     n = s["n_performing"]
-    products = rng.choice(list(PRODUCT_MIX), size=n, p=list(PRODUCT_MIX.values()))
+    mix = _product_mix(cfg)
+    products = rng.choice(list(mix), size=n, p=list(mix.values()))
     limit, grade, arrears, mob = _draw_common(rng, n, products, defaulted=False)
     util_type = rng.choice(["full", "roi", "partial"], size=n, p=[0.04, 0.04, 0.92])
     util = np.where(util_type == "full", 1.0,
@@ -201,9 +241,10 @@ def generate_performing(cfg: dict) -> pd.DataFrame:
         "application_date": s["application_date"],
         "limit_ref": limit,
         "drawn_ref": np.round(limit * util, 2),
-        "grade_ref": grade.astype(float),
+        "grade_ref": _to_rating_scale(grade.astype(float), cfg),
         "months_on_book": mob,
         "arrears_flag_6m": arrears,
         "limit_cut_flag": 0,
-        "annual_turnover_meur": _turnover(cfg["seed"] + 3, products),
+        "annual_turnover_meur": _turnover(cfg["seed"] + 3, products, limit,
+                                          cfg["synthetic"].get("calibration", {}).get("large_corporate_limit_share")),
     })

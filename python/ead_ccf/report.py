@@ -206,7 +206,7 @@ Own CCF estimates are only allowed for undrawn revolving commitments (CRR3 Art. 
 ## 3. Data
 
 ### 3.1 Reference data set
-One record per defaulted facility with values at the reference date (default date − {cfg['realised_ccf']['horizon_months']} months) and at default. Source: `data/raw/defaults.csv` (synthetic, `python/ead_ccf/synthetic_data.py`).
+One record per defaulted facility with values at the reference date (default date − {cfg['realised_ccf']['horizon_months']} months) and at default. Source: `data/raw/defaults.csv` (synthetic, `python/ead_ccf/synthetic_data.py`). The synthetic data is calibrated to public BNP Paribas Fortis disclosures (product mix, 17-grade rating scale, large-corporate share; decision D012, `docs/data_calibration.md`). CCF levels are not calibrated because they are not publicly disclosed at Fortis level.
 
 ### 3.2 Data quality checks
 {md_table(R['dq'], {'pct_fail': '{:.3f}'})}

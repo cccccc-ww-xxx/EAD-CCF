@@ -18,6 +18,11 @@ synthetic:
   last_default_year: 2024
   application_date: "2025-12-31"
   downturn_years_dgp: [2012, 2013, 2020]   # years where the data generator adds stress
+  # D012: calibration to PUBLIC BNP Paribas Fortis disclosures (docs/data_calibration.md)
+  calibration:
+    product_mix: {RET_OVD: 0.45, RET_CARD: 0.05, SME_CRL: 0.30, CORP_RCF: 0.20}
+    performing_grades: 17               # 17 performing + 3 default grades (Pillar 3 2025 p. 21)
+    large_corporate_limit_share: 0.50   # F-IRB share of Corporates - General (CR7-A, Dec 2025: 50.7%)
 
 # --- Products and standardised CCFs ------------------------------------------
 # sa_ccf = CRR3 standardised-approach CCF used for the input floor.

@@ -83,7 +83,7 @@ def data_quality_checks(df: pd.DataFrame) -> pd.DataFrame:
         "DQ07 reference_date >= default_date":
             pd.to_datetime(df["reference_date"]) >= pd.to_datetime(df["default_date"]),
         "DQ08 missing grade_ref": df["grade_ref"].isna(),
-        "DQ09 grade_ref outside 1-12": df["grade_ref"].notna() & ~df["grade_ref"].between(1, 12),
+        "DQ09 grade_ref outside 1-17": df["grade_ref"].notna() & ~df["grade_ref"].between(1, 17),
         "DQ10 missing ead_default": df["ead_default"].isna(),
     }
     rows = [{"check": k, "n_fail": int(v.sum()), "pct_fail": round(100 * v.sum() / n, 3)}

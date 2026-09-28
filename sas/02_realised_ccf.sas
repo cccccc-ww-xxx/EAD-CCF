@@ -37,8 +37,8 @@ proc sql;
   union all
   select 'DQ08 missing grade_ref',          sum(missing(grade_ref))        from raw.defaults
   union all
-  select 'DQ09 grade_ref outside 1-12',
-         sum(not missing(grade_ref) and (grade_ref < 1 or grade_ref > 12)) from raw.defaults
+  select 'DQ09 grade_ref outside 1-17',
+         sum(not missing(grade_ref) and (grade_ref < 1 or grade_ref > 17)) from raw.defaults
   union all
   select 'DQ10 missing ead_default',        sum(missing(ead_default))      from raw.defaults;
 quit;

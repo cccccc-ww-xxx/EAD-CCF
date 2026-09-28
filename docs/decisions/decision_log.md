@@ -134,3 +134,18 @@ Current practice combines restructured facilities at borrower level. CRR Art. 4(
 - **Real-data follow-up:** confirm the turnover source and definition (consolidated group turnover, reference date, fallback when missing), and list which Fortis revolving products are in scope.
 
 **References:** CRR3 Art. 151(8), 166(8b), 166(8c), 111 and Annex I; EBA draft GL EBA/CP/2025/10 section 4.1.
+
+## D012 — Calibration of the synthetic data to public disclosures
+**Status: APPROVED (2026-09-28, Estelle)**
+
+**Decision:** calibrate the synthetic data to public BNP Paribas Fortis disclosures.
+- **Large corporates:** 50% of corporate revolving limits (F-IRB vs A-IRB Corporates – General, EU CR7-A).
+- **Rating scale:** 17 performing grades.
+- **Product mix:** cards reduced to 5% because qualifying revolving retail is very small at Fortis.
+
+CCF levels could not be calibrated: BNP Paribas Fortis does not publish EU CR6. Sources, figures, page references and the post-calibration check are in `docs/data_calibration.md`.
+
+**Effect:**
+- Large-corporate defaults excluded from estimation rose from 277 to 413.
+- All four segments remain significantly different (retail vs corporate below 50% utilisation now only just: p = 0.047).
+- The fractional logit still beats the benchmark out-of-time.

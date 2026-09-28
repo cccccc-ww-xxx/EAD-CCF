@@ -13,7 +13,7 @@
 | default_year | int | Year of default (drives dev/OOT split and long-run average) |
 | limit_ref | num | Committed limit at reference date |
 | drawn_ref | num | Drawn amount at reference date |
-| grade_ref | num | Rating grade at reference date, 1 (best) – 12 (worst); ~2% missing |
+| grade_ref | num | Rating grade at reference date, 1 (best) – 17 (worst performing grade), as the 17 performing grades at BNP Paribas Fortis; ~2% missing |
 | months_on_book | int | Facility age at reference date |
 | arrears_flag_6m | 0/1 | Any arrears in the 6 months before reference date |
 | limit_cut_flag | 0/1 | Bank cut the limit between reference date and default — **not a driver** (D006) |
@@ -44,3 +44,8 @@ Same characteristics as above at the application date, without default informati
 Known drivers: utilisation (−), rating grade (+), arrears (+), product, downturn years
 2012, 2013, 2020 (+), limit cut (−). **No effect**: limit size, months on book.
 Because the truth is known, the documentation checks whether the estimation recovers it.
+
+
+## Calibration
+
+Product mix, rating scale and large-corporate share are calibrated to public BNP Paribas Fortis disclosures. See `docs/data_calibration.md` (D012).

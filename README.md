@@ -6,9 +6,9 @@ development chain an internal validation team or the ECB expects to see: data qu
 realised CCF, risk differentiation, calibration, downturn, margin of conservatism,
 input floor, performance testing, documentation and a Python/SAS reconciliation.
 
-> **Not an approved model.** All numbers come from synthetic data. Every methodological
-> choice is a *proposal* in [`docs/decisions/decision_log.md`](docs/decisions/decision_log.md)
-> waiting for a human decision.
+> **Not an approved model.** All numbers come from synthetic data. Methodological
+> choices, their evidence and the decisions taken are recorded in
+> [`docs/decisions/decision_log.md`](docs/decisions/decision_log.md).
 
 ## Quick start (Python)
 
@@ -50,7 +50,7 @@ the final Guidelines have been published and update the references.
 
 ## Method ladder
 
-1. **Benchmark** – segment long-run average (product × utilisation band).
+1. **Benchmark** – long-run average per calibration segment (4 test-based segments, D004).
 2. **Fractional logit** (Papke & Wooldridge, 1996) – replaces the benchmark only if it
    improves out-of-time MAE *and* rank correlation.
 3. **Direct-EAD challengers** (Taplin et al., 2007; Tong et al., 2016) – open issue.

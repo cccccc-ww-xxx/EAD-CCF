@@ -110,7 +110,7 @@ The distribution is bimodal with mass at 0 and at 1, as reported by Tong et al. 
 ## 5. Risk differentiation
 
 ### 5.1 Method ladder
-1. Benchmark — segment long-run average (product × utilisation band).
+1. Benchmark — long-run average per calibration segment (section 6.0, decision D004).
 2. Fractional logit (Papke & Wooldridge, 1996) with robust standard errors — replaces the benchmark only if it improves **both** out-of-time MAE and Spearman correlation.
 3. Direct-EAD alternatives (Taplin et al., 2007; Tong et al., 2016) — *not yet implemented, open issue*.
 4. Gradient boosting with monotonic constraints — challenger for driver discovery only.
@@ -352,7 +352,20 @@ A = data deficiencies (missing ratings), B = methodological choice (cap at 100% 
 | TOTAL | 20000 | 7,193,099,450 | 2,835,263,465 | 0.4756 | 0.0063 | 4,652,141,590 | 4,570,154,128 | 1.0179 |
 
 ## 9. Human judgement and decisions
-All methodological choices are logged in `docs/decisions/`. Each entry lists the options considered, regulatory references, the proposal and the **human decision (pending)**.
+All methodological choices are logged in `docs/decisions/decision_log.md` with the options considered, regulatory references, the evidence and the human decision. Current status:
+
+| ID | Topic | Status |
+|---|---|---|
+| D001 | Reference date approach and observation period | APPROVED (2026-09-28, Estelle) |
+| D002 | Floor and cap on realised CCF | APPROVED (2026-09-28, Estelle) |
+| D003 | Region of instability and fully drawn facilities | APPROVED (2026-09-28, Estelle) |
+| D004 | Segmentation (benchmark and calibration segments) | APPROVED (2026-09-28, Estelle) |
+| D005 | Long-run average weighting | APPROVED (2026-09-28, Estelle) |
+| D006 | Eligible risk drivers | APPROVED (2026-09-28, Estelle) |
+| D007 | Estimation sample for final quantification | APPROVED (2026-09-28, Estelle) |
+| D008 | Downturn period identification | APPROVED (2026-09-28, Estelle) |
+| D009 | Margin of conservatism | INTERIM — proxies kept until the bank framework is applied |
+| D010 | Facility-level realised CCF vs borrower-level aggregation | OPEN ISSUE — under investigation |
 
 ## 10. Limitations and open issues
 1. Synthetic data only — results say nothing about the real portfolio.
@@ -360,9 +373,10 @@ All methodological choices are logged in `docs/decisions/`. Each entry lists the
 3. Realised CCF computed per facility; related-contract/umbrella treatment and borrower-level aggregation of restructured facilities not yet assessed against Art. 4(1)(56).
 4. Additional drawings after default and in-default CCF not implemented.
 5. Direct-EAD challengers (rung 3) not implemented.
-6. MoC quantification uses simple proxies.
-7. SA CCF buckets per product to be verified.
-8. SAS implementation written but not yet run in the bank environment; reconciliation pending.
+6. MoC quantification uses simple proxies (D009 interim) until the bank's MoC framework is implemented.
+7. Negative realised CCFs are kept for standard facilities (D002); this lowers their long-run average and needs a documented justification (causes of repayments, sensitivity with a 0 floor).
+8. SA CCF buckets per product to be verified.
+9. SAS implementation written but not yet run in the bank environment; reconciliation not yet performed.
 
 ## 11. Reproducibility
 

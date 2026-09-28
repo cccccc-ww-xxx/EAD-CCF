@@ -103,6 +103,16 @@ def fig_deciles(dec, path):
 EXPECTED_SIGN = {"utilisation": -1, "grade": 1, "arrears_6m": 1}
 
 
+def decision_status_table(P: dict) -> str:
+    """Read decision IDs, titles and status lines from the decision log."""
+    import re
+    text = (P["docs"] / "decisions" / "decision_log.md").read_text(encoding="utf-8")
+    rows = re.findall(r"^## (D\d{3}) — (.+?)\n\*\*Status: (.+?)\*\*", text, flags=re.M)
+    lines = ["| ID | Topic | Status |", "|---|---|---|"]
+    lines += [f"| {i} | {t} | {s} |" for i, t, s in rows]
+    return "\n".join(lines)
+
+
 def coef_commentary(fl: pd.DataFrame, alpha: float = 0.05) -> str:
     """Generated (not hand-written) commentary on the fractional-logit estimates."""
     c = fl.set_index("variable")
@@ -218,7 +228,7 @@ The distribution is bimodal with mass at 0 and at 1, as reported by Tong et al. 
 ## 5. Risk differentiation
 
 ### 5.1 Method ladder
-1. Benchmark — segment long-run average (product × utilisation band).
+1. Benchmark — long-run average per calibration segment (section 6.0, decision D004).
 2. Fractional logit (Papke & Wooldridge, 1996) with robust standard errors — replaces the benchmark only if it improves **both** out-of-time MAE and Spearman correlation.
 3. Direct-EAD alternatives (Taplin et al., 2007; Tong et al., 2016) — *not yet implemented, open issue*.
 4. Gradient boosting with monotonic constraints — challenger for driver discovery only.
@@ -304,7 +314,9 @@ A = data deficiencies (missing ratings), B = methodological choice (cap at 100% 
 {md_table(app, {'n': '{:,.0f}', 'limit': '{:,.0f}', 'drawn': '{:,.0f}', 'ead_irb': '{:,.0f}', 'ead_sa': '{:,.0f}'})}
 
 ## 9. Human judgement and decisions
-All methodological choices are logged in `docs/decisions/`. Each entry lists the options considered, regulatory references, the proposal and the **human decision (pending)**.
+All methodological choices are logged in `docs/decisions/decision_log.md` with the options considered, regulatory references, the evidence and the human decision. Current status:
+
+{decision_status_table(P)}
 
 ## 10. Limitations and open issues
 1. Synthetic data only — results say nothing about the real portfolio.
@@ -312,9 +324,10 @@ All methodological choices are logged in `docs/decisions/`. Each entry lists the
 3. Realised CCF computed per facility; related-contract/umbrella treatment and borrower-level aggregation of restructured facilities not yet assessed against Art. 4(1)(56).
 4. Additional drawings after default and in-default CCF not implemented.
 5. Direct-EAD challengers (rung 3) not implemented.
-6. MoC quantification uses simple proxies.
-7. SA CCF buckets per product to be verified.
-8. SAS implementation written but not yet run in the bank environment; reconciliation pending.
+6. MoC quantification uses simple proxies (D009 interim) until the bank's MoC framework is implemented.
+7. Negative realised CCFs are kept for standard facilities (D002); this lowers their long-run average and needs a documented justification (causes of repayments, sensitivity with a 0 floor).
+8. SA CCF buckets per product to be verified.
+9. SAS implementation written but not yet run in the bank environment; reconciliation not yet performed.
 
 ## 11. Reproducibility
 

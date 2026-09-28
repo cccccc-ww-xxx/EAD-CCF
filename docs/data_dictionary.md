@@ -34,9 +34,9 @@ Same characteristics as above at the application date, without default informati
 | facility_type | STANDARD / ROI / FULLY_DRAWN (D003) |
 | ccf_raw | extra_drawing / undrawn_ref (undefined when undrawn = 0) |
 | ccf_denominator | undrawn_ref, or max(undrawn_ref, 5% × limit) for ROI / fully drawn |
-| ccf_realised | extra_drawing / ccf_denominator, floored at 0, no cap (D002) |
+| ccf_realised | extra_drawing / ccf_denominator; negatives kept for STANDARD, floored at 0 for ROI / FULLY_DRAWN; no cap (D002) |
 | ccf_model_target | ccf_realised capped to [0, 1] — fractional-logit target only |
-| util_band, calib_segment | Segmentation (D004) |
+| util_band, calib_segment | Utilisation band and calibration segment: RETAIL/U1_lt50, CORPORATE/U1_lt50, ALL/U2_50_95, ALL/U3_ge95 (D004) |
 
 ## What the synthetic data-generating process contains
 

@@ -5,7 +5,7 @@ before estimation (CLAUDE.md section 4). Claude proposes options with pros,
 cons and regulatory references; the model owner decides.
 
 Status values: **PROPOSED** (default in `config/config.yaml`, not yet approved) ·
-**APPROVED** · **REJECTED**. All entries are PROPOSED until signed off.
+**APPROVED** · **INTERIM** · **OPEN ISSUE** · **REJECTED**. Each entry shows who decided and when.
 
 Regulatory shorthand: *CRR* = Reg. (EU) 575/2013 as amended by CRR3 (Reg. (EU)
 2024/1623); *draft GL* = EBA/CP/2025/10 draft Guidelines on CCF estimation

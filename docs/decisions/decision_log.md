@@ -85,7 +85,7 @@ Product remains a risk driver inside the fractional logit; the segments only set
 **References:** draft GL chapter 6.
 
 ## D005 — Long-run average weighting
-**Status: PROPOSED**
+**Status: APPROVED (2026-09-28, Estelle)**
 
 | Option | Source | Effect |
 |---|---|---|
@@ -93,7 +93,7 @@ Product remains a risk driver inside the fractional logit; the segments only set
 | Arithmetic average of yearly averages | Former ECB Guide to internal models (CCF chapter withdrawn in release 4.1, June 2026) | Each year weighs the same |
 
 Industry responses to the consultation flagged this inconsistency. Both are computed in section 6.1 of the model documentation; the `difference` column shows the impact.
-**Proposal:** facility-weighted, following the draft GL; revisit when the final GL is published. **Decision:** _pending_
+**Decision:** facility-weighted, following the draft GL. On the synthetic data it is 0.9–2.1 percentage points higher than the average of yearly averages in every segment, i.e. also the more conservative choice. Revisit when the final GL is published; the yearly average stays in the documentation as a sensitivity.
 
 ## D006 — Eligible risk drivers
 **Status: PROPOSED**

@@ -54,7 +54,7 @@ segmentation:
 
 # --- Long-run average ---------------------------------------------------------
 lra:
-  method: "facility_weighted"   # [DECISION] "facility_weighted" (EBA draft GL) or "yearly_average" (old EGIM)
+  method: "facility_weighted"   # D005 APPROVED: "facility_weighted" (EBA draft GL) or "yearly_average" (old EGIM)
 
 # --- Development / out-of-time split -----------------------------------------
 split:

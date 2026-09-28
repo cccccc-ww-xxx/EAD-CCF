@@ -115,13 +115,13 @@ Downturn years = union of (i) the two years with the highest average realised CC
 **Decision:** downturn years = union of data-driven (2 highest-CCF years) and macro-economic candidates; on the synthetic data 2012, 2013 and 2020. Downturn applied as an additive add-on (see D002). On real data, the macro candidates must be justified with economic indicators and aligned with the LGD downturn periods.
 
 ## D009 — Margin of conservatism
-**Status: PROPOSED (placeholder)**
+**Status: INTERIM — proxies kept until the bank framework is applied**
 
 Prototype proxies: A = impact of missing ratings, B = impact of the cap choice (D002), C = bootstrap estimation error (90% quantile). Must be replaced by the bank's approved MoC framework (EBA/GL/2017/16 section 4.4; draft GL chapter 9).
-**Decision:** _pending_
+**Decision (2026-09-28, Estelle):** keep the proxies for the prototype, clearly labelled. The bank's MoC framework will be provided and implemented next; this entry will then be updated.
 
 ## D010 — Facility-level realised CCF vs borrower-level aggregation
-**Status: OPEN ISSUE**
+**Status: OPEN ISSUE — under investigation**
 
 Current practice combines restructured facilities at borrower level. CRR Art. 4(1)(56) and the draft GL require a realised CCF per facility, with exceptions only for related contracts under an overarching agreement with comparable characteristics. The current practice must be assessed against this requirement before real-data development starts.
-**Decision:** _pending_
+**Decision (2026-09-28, Estelle):** investigate first. Next step: establish from the current EAD-CCF documentation and colleagues how restructured facilities are linked today, then assess against Art. 4(1)(56) and the related-contract exception. The prototype computes one realised CCF per facility in the meantime.
